@@ -12,6 +12,9 @@ export default function Footer() {
 
                 {/* Navigation */}
                 <nav className="text-white flex flex-wrap justify-center gap-x-12 gap-y-3 text-m font-semibold">
+                    <a href="/standorte" className="hover:text-white font-bold">
+                        Standorte
+                    </a>
                     <a href="/legalnotice" className="hover:text-white font-bold">
                         Impressum
                     </a>
