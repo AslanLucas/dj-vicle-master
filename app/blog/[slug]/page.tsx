@@ -84,7 +84,7 @@ export default async function BlogDetailPage({ params }: BlogPageProps) {
         </Link>
 
         <p className="mt-8 text-sm uppercase tracking-wide text-[#2A2A2A]/70">
-          {post.strategicGoal} · Hauptkeyword: {post.mainKeyword}
+          · {post.mainKeyword}
         </p>
 
         <h1 className="mt-3 text-4xl font-extrabold uppercase leading-tight tracking-wide sm:text-5xl">
