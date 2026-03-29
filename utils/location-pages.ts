@@ -6,6 +6,7 @@ export type LocationContent = {
   h1: string;
   intro: string;
   mainKeyword: string;
+  seoKeywords: string[];
   secondaryKeywords: string[];
   localVariants: string[];
   internalLinkIdeas: string[];
@@ -56,8 +57,15 @@ const createLocation = (
     `DJ VICLE ist dein professioneller DJ in ${city} für deutsch-russische Hochzeiten, Clubnächte und Firmenevents – inklusive moderner Ton- und Lichttechnik.`,
   h1: `DJ in ${city} für Hochzeiten, Clubs und Events`,
   intro:
-    `Du suchst einen DJ in ${city}, der Energie, Erfahrung und ein sicheres Gespür für den richtigen Moment mitbringt? DJ VICLE verbindet deutsche und russische Musikwelten, plant mit dir den Ablauf deiner Feier und sorgt mit professioneller Technik für eine volle Tanzfläche – vom Empfang bis zur letzten Zugabe.`,
+    `Du suchst einen DJ in ${city}, der Energie, Erfahrung und ein sicheres Gespür für den richtigen Moment mitbringt? DJ VICLE verbindet als russischer und deutscher DJ beide Musikwelten, plant mit dir den Ablauf deiner Feier und sorgt mit professioneller Technik für eine volle Tanzfläche – vom Empfang bis zur letzten Zugabe.`,
   mainKeyword: `DJ ${city}`,
+  seoKeywords: [
+    `Russischer DJ ${city}`,
+    `Deutscher DJ ${city}`,
+    `Russischer DJ Deutsch DJ ${city}`,
+    `DJ Hochzeit ${city}`,
+    `DJ für Event ${city}`,
+  ],
   secondaryKeywords: [
     `Hochzeits DJ ${city}`,
     `Event DJ ${city}`,

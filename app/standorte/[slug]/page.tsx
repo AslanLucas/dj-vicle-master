@@ -28,6 +28,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return {
     title: location.seoTitle,
     description: location.metaDescription,
+    keywords: [location.mainKeyword, ...location.seoKeywords, ...location.secondaryKeywords],
     alternates: {
       canonical: `https://www.djvicle.de/standorte/${location.slug}`,
     },
@@ -50,9 +51,35 @@ export default async function LocationPage({ params }: PageProps) {
     notFound();
   }
 
+
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    name: `${location.h1} | DJ VICLE`,
+    provider: {
+      "@type": "Person",
+      name: "DJ VICLE",
+      jobTitle: "Russischer & Deutscher DJ",
+      url: "https://www.djvicle.de",
+    },
+    areaServed: {
+      "@type": "City",
+      name: location.city,
+    },
+    serviceType: "DJ Service für Hochzeiten, Firmenfeiern und Events",
+    keywords: [location.mainKeyword, ...location.seoKeywords, ...location.secondaryKeywords],
+    url: `https://www.djvicle.de/standorte/${location.slug}`,
+    description: location.metaDescription,
+  };
+
   return (
     <main className="min-h-screen bg-white text-[#2A2A2A]">
       <Header />
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
 
       <section className="mx-auto max-w-5xl px-6 pb-16 pt-36">
         <p className="text-sm uppercase tracking-wide text-[#2A2A2A]/70">Standortseite · {location.city}</p>
