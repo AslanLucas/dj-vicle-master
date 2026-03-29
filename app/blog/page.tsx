@@ -28,22 +28,20 @@ export default function BlogPage() {
 
         <div className="mt-12 grid gap-6 md:grid-cols-3">
           {blogPosts.map((post) => (
-            <article
+            <Link
               key={post.slug}
-              className="rounded-2xl border border-[#2A2A2A]/15 bg-white p-6 transition hover:border-[#2A2A2A]/35 hover:bg-[#F5F5F5]"
+              href={`/blog/${post.slug}`}
+              className="group block rounded-2xl border border-[#2A2A2A]/15 bg-white p-6 transition hover:border-[#2A2A2A]/35 hover:bg-[#F5F5F5] hover:shadow-[0_0_20px_rgba(0,0,0,0.12)]"
             >
               <p className="text-xs font-bold uppercase tracking-wide text-[#2A2A2A]/60">
                 {post.strategicGoal} · {post.mainKeyword}
               </p>
               <h2 className="mt-3 text-xl font-bold uppercase leading-snug">{post.title}</h2>
               <p className="mt-4 text-sm leading-relaxed text-[#2A2A2A]/85">{post.excerpt}</p>
-              <Link
-                href={`/blog/${post.slug}`}
-                className="mt-6 inline-block rounded-lg bg-[#2A2A2A] px-4 py-2 text-xs font-semibold uppercase text-white transition hover:opacity-90"
-              >
-                Beitrag lesen
-              </Link>
-            </article>
+              <p className="mt-6 text-xs font-semibold uppercase tracking-wide text-[#2A2A2A]/70 transition group-hover:text-[#2A2A2A]">
+                Zum Beitrag
+              </p>
+            </Link>
           ))}
         </div>
       </section>
