@@ -15,9 +15,6 @@ export default function Footer() {
                     <a href="/standorte" className="hover:text-white font-bold">
                         Standorte
                     </a>
-                    <a href="/blog" className="hover:text-white font-bold">
-                        Blog
-                    </a>
                     <a href="/legalnotice" className="hover:text-white font-bold">
                         Impressum
                     </a>
