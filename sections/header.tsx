@@ -15,6 +15,7 @@ const navItems = [
     { label: 'Über mich', id: 'story' },
     { label: 'Kontakt', id: 'contact' },
     { label: 'Galerie', id: 'gallery' },
+    { label: 'Blog', href: '/blog' },
 ]
 
 export default function Header() {
@@ -41,6 +42,7 @@ export default function Header() {
 
     useEffect(() => {
         const sections = navItems
+            .filter((item): item is { label: string; id: string; href?: string } => Boolean(item.id))
             .map((item) => document.getElementById(item.id))
             .filter(Boolean) as HTMLElement[]
 
@@ -64,7 +66,14 @@ export default function Header() {
         return () => window.removeEventListener('scroll', handleScroll)
     }, [activeId])
 
-    const handleNavigation = (id: string) => {
+    const handleNavigation = (id?: string, href?: string) => {
+
+        if (href) {
+            router.push(href);
+            return;
+        }
+
+        if (!id) return;
 
         // ✅ Galerie führt auf eigene Seite
         if (id === "gallery") {
@@ -101,12 +110,13 @@ export default function Header() {
                 </Link>
 
                 <PopoverGroup className="hidden lg:flex lg:items-center lg:gap-x-8">
-                    {navItems.map(({ label, id }) => {
-                        const isActive = activeId === id
+                    {navItems.map(({ label, id, href }) => {
+                        const isActive = id ? activeId === id : false
+                        const itemKey = id ?? href ?? label
                         return (
                             <button
-                                key={id}
-                                onClick={() => handleNavigation(id)}
+                                key={itemKey}
+                                onClick={() => handleNavigation(id, href)}
                                 className={`relative text-base font-semibold uppercase text-white pb-0.5 transition-all duration-300
                                     after:content-[''] after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 
                                     hover:after:w-full hover:after:bg-white after:transition-all after:duration-300 
@@ -156,18 +166,21 @@ export default function Header() {
                     </div>
 
                     <div className="mt-6 space-y-4">
-                        {navItems.map(({ label, id }) => (
+                        {navItems.map(({ label, id, href }) => {
+                            const itemKey = id ?? href ?? label
+
+                            return (
                             <button
-                                key={id}
+                                key={itemKey}
                                 onClick={() => {
-                                    handleNavigation(id)
+                                    handleNavigation(id, href)
                                     setMobileMenuOpen(false)
                                 }}
                                 className="block w-full text-left px-3 py-2 text-base font-semibold uppercase text-white hover:bg-white hover:text-black rounded-md"
                             >
                                 {label}
                             </button>
-                        ))}
+                        )})}
 
                         <Link
                             href="/booking"
