@@ -31,7 +31,7 @@ export default function Footer() {
                         rel="noopener noreferrer"
                         className="text-m hover:text-white"
                     >
-                        Lingen (Ems), Deutschland
+                        Nordhorn, Deutschland
                     </a>
                 </div>
 
