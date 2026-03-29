@@ -1,0 +1,73 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+/* Theme-Variablen (inkl. Font aus next/font) */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-primary);
+}
+
+/* Dark Mode */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #ffffff;
+    --foreground: #ffffff;
+  }
+}
+
+body:has(.no-header-padding) {
+  padding-top: 0 !important;
+}
+
+
+/* Allgemeine Styles */
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-primary), serif; /* Crimson Text */
+  font-size: 1.125rem; /* Etwas größer (18px) */
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  padding-top: var(--header-height);
+}
+
+
+html {
+  scroll-behavior: smooth;
+}
+
+@keyframes gentleHeartbeat {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+.heartbeat span {
+  display: inline-block;
+  animation: gentleHeartbeat 2.2s ease-in-out infinite;
+  transform-origin: center;
+  will-change: transform;
+}
+
+
+@keyframes heartbeatIcon {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.08);
+  }
+}
+
+.heartbeat-icon {
+  animation: heartbeatIcon 2.5s ease-in-out infinite;
+  transform-origin: center;
+}
