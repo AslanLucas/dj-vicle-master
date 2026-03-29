@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import Header from "@/sections/header";
@@ -60,18 +61,22 @@ export default async function LocationPage({ params }: PageProps) {
 
         <p className="mt-8 text-lg leading-relaxed text-[#2A2A2A]/90">{location.intro}</p>
 
-        <div className="mt-12 grid gap-6 rounded-2xl bg-[#F5F5F5] p-6 md:grid-cols-3">
-          <div>
-            <p className="text-xs font-bold uppercase tracking-wider text-[#2A2A2A]/60">SEO-Title</p>
-            <p className="mt-2 text-sm font-semibold">{location.seoTitle}</p>
+        <div className="mt-12 grid gap-6 md:grid-cols-2">
+          <div className="relative h-72 overflow-hidden rounded-2xl">
+            <Image
+              src="/vadimbooking.jpg"
+              alt={`DJ VICLE bei einer Veranstaltung in ${location.city}`}
+              fill
+              className="object-cover"
+            />
           </div>
-          <div>
-            <p className="text-xs font-bold uppercase tracking-wider text-[#2A2A2A]/60">Meta-Description</p>
-            <p className="mt-2 text-sm">{location.metaDescription}</p>
-          </div>
-          <div>
-            <p className="text-xs font-bold uppercase tracking-wider text-[#2A2A2A]/60">URL-Slug</p>
-            <p className="mt-2 text-sm font-semibold">/standorte/{location.slug}</p>
+          <div className="relative h-72 overflow-hidden rounded-2xl">
+            <Image
+              src="/setup.JPG"
+              alt={`Licht- und Tontechnik für Events in ${location.city}`}
+              fill
+              className="object-cover"
+            />
           </div>
         </div>
 
@@ -117,31 +122,25 @@ export default async function LocationPage({ params }: PageProps) {
           </div>
         </section>
 
-        <section className="mt-16 rounded-2xl bg-[#2A2A2A] p-8 text-white">
-          <h2 className="text-3xl font-bold uppercase">SEO-Ausrichtung für {location.city}</h2>
-
-          <div className="mt-6 grid gap-6 md:grid-cols-2">
-            <div>
-              <h3 className="text-sm font-bold uppercase tracking-wide text-white/70">Hauptkeyword</h3>
-              <p className="mt-2 text-lg font-semibold">{location.mainKeyword}</p>
-            </div>
-            <div>
-              <h3 className="text-sm font-bold uppercase tracking-wide text-white/70">Nebenkeywords</h3>
-              <p className="mt-2 text-sm leading-relaxed">{location.secondaryKeywords.join(" · ")}</p>
-            </div>
-            <div>
-              <h3 className="text-sm font-bold uppercase tracking-wide text-white/70">Lokale Keyword-Varianten</h3>
-              <p className="mt-2 text-sm leading-relaxed">{location.localVariants.join(" · ")}</p>
-            </div>
-            <div>
-              <h3 className="text-sm font-bold uppercase tracking-wide text-white/70">Interne Linkideen</h3>
-              <ul className="mt-2 list-disc space-y-1 pl-5 text-sm leading-relaxed">
-                {location.internalLinkIdeas.map((idea) => (
-                  <li key={idea}>{idea}</li>
-                ))}
-              </ul>
-            </div>
+        <section className="mt-16">
+          <h2 className="text-3xl font-bold uppercase">{location.sections.eventTypes.title}</h2>
+          <div className="mt-6 grid gap-4 md:grid-cols-2">
+            {location.sections.eventTypes.items.map((item) => (
+              <article key={item.title} className="rounded-xl border border-[#2A2A2A]/10 p-5">
+                <h3 className="text-lg font-bold uppercase">{item.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-[#2A2A2A]/85">{item.text}</p>
+              </article>
+            ))}
           </div>
+        </section>
+
+        <section className="mt-16">
+          <h2 className="text-3xl font-bold uppercase">{location.sections.trust.title}</h2>
+          {location.sections.trust.paragraphs.map((text) => (
+            <p key={text} className="mt-5 leading-relaxed text-[#2A2A2A]/90">
+              {text}
+            </p>
+          ))}
         </section>
 
         <section className="mt-16 rounded-2xl border border-[#2A2A2A]/20 p-8">

@@ -26,6 +26,14 @@ export type LocationContent = {
       title: string;
       items: { question: string; answer: string }[];
     };
+    eventTypes: {
+      title: string;
+      items: { title: string; text: string }[];
+    };
+    trust: {
+      title: string;
+      paragraphs: string[];
+    };
   };
   cta: {
     title: string;
@@ -125,6 +133,35 @@ const createLocation = (
           answer:
             "Ja, bei Bedarf inklusive. Das Setup wird auf Gästezahl, Location und Ablauf abgestimmt, damit Technik und Atmosphäre perfekt zusammenpassen.",
         },
+      ],
+    },
+    eventTypes: {
+      title: `Diese Events begleite ich in ${city}`,
+      items: [
+        {
+          title: "Hochzeiten",
+          text: `Von der Trauung über den Sektempfang bis zur Late-Night-Party: Ich begleite Hochzeiten in ${city} mit emotionaler Dramaturgie, passenden Übergängen und einer Musiklinie, die Brautpaar und Gäste gleichermaßen mitnimmt.`,
+        },
+        {
+          title: "Firmenfeiern",
+          text: `Für Business-Events in ${city} liefere ich einen professionellen Rahmen mit stilvoller Musik im Empfang und klarer Party-Energie am Abend – passend zu Markenauftritt, Zielgruppe und Ablaufplan.`,
+        },
+        {
+          title: "Geburtstage & private Feiern",
+          text: `Ob 30., 40. oder runder Familienabend: In ${city} gestalte ich private Events persönlich, flexibel und mit Fokus auf eine volle Tanzfläche statt starrer Standard-Playlist.`,
+        },
+        {
+          title: "Clubs & Special Nights",
+          text: `Dank regelmäßiger Clubpraxis bringe ich moderne Sets, saubere Übergänge und aktuelles Gespür für Trends mit – perfekt für lange Partynächte in ${city}.`,
+        },
+      ],
+    },
+    trust: {
+      title: `Was Kunden aus ${city} besonders schätzen`,
+      paragraphs: [
+        `Viele Anfragen aus ${city} kommen über Empfehlungen. Der Grund: transparente Kommunikation, verlässliche Planung und ein Auftritt, der sowohl menschlich als auch technisch professionell wirkt.`,
+        `Du bekommst vor dem Event klare Absprachen zu Zeiten, Technik, Musikwünschen und Ablauf. Am Eventtag selbst bin ich frühzeitig vor Ort, arbeite abgestimmt mit Trauzeugen, Fotografen oder Location-Team und halte den musikalischen Faden durchgehend stabil.`,
+        `Mein Ziel ist immer dasselbe: ein Abend, der sich für dich leicht anfühlt, für deine Gäste besonders wirkt und bei dem Musik, Timing und Stimmung exakt zusammenpassen.`,
       ],
     },
   },
