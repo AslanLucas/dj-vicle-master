@@ -13,7 +13,7 @@ const montserratText = Montserrat({
 });
 
 export const metadata: Metadata = {
-    title: "DJ VICLE",
+    title: "DJ VICLE | DJ für Hochzeiten, Clubs & Events",
     description:
         "DJ VICLE – Deutscher & Russischer DJ für Clubs, Hochzeiten, Geburtstage und Events. Professionelle Musik, moderne Licht- und Tontechnik sowie Vermietung von Veranstaltungstechnik.",
     keywords: [
