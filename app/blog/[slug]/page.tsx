@@ -27,6 +27,13 @@ export async function generateMetadata({ params }: BlogPageProps): Promise<Metad
   return {
     title: post.metaTitle,
     description: post.metaDescription,
+    keywords: [
+      post.mainKeyword,
+      "deutsch russischer dj",
+      "russischer dj",
+      "deutscher dj",
+      "hochzeits dj",
+    ],
     alternates: {
       canonical: `https://www.djvicle.de/blog/${post.slug}`,
     },
@@ -64,6 +71,9 @@ export default async function BlogDetailPage({ params }: BlogPageProps) {
       url: "https://www.djvicle.de",
     },
     mainEntityOfPage: `https://www.djvicle.de/blog/${post.slug}`,
+    inLanguage: "de-DE",
+    keywords: [post.mainKeyword, "deutsch russischer dj", "event dj", "hochzeits dj"],
+    url: `https://www.djvicle.de/blog/${post.slug}`,
   };
 
   return (

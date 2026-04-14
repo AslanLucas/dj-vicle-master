@@ -8,15 +8,70 @@ export const metadata: Metadata = {
   title: "Blog | DJ VICLE",
   description:
     "Tipps, Guides und Praxiswissen rund um Hochzeiten, Firmenfeiern und private Events mit DJ VICLE.",
+  keywords: [
+    "deutsch russischer dj",
+    "hochzeits dj tipps",
+    "event musikplanung",
+    "russischer dj hochzeit",
+    "dj ratgeber",
+  ],
   alternates: {
     canonical: "https://www.djvicle.de/blog",
+  },
+  openGraph: {
+    title: "Blog | DJ VICLE",
+    description:
+      "Praxiswissen zu deutsch-russischen Hochzeiten, Eventplanung und DJ-Buchung vom Profi.",
+    url: "https://www.djvicle.de/blog",
+    siteName: "DJ VICLE",
+    locale: "de_DE",
+    type: "website",
   },
 };
 
 export default function BlogPage() {
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    name: "DJ VICLE Blog",
+    description:
+      "Ratgeber rund um Musikdramaturgie, DJ-Buchung und Eventplanung für Hochzeiten, Firmenfeiern und private Events.",
+    url: "https://www.djvicle.de/blog",
+    inLanguage: "de-DE",
+    keywords: [
+      "deutsch russischer dj",
+      "deutscher dj",
+      "russischer dj",
+      "hochzeits dj",
+      "dj buchen",
+    ],
+    blogPost: blogPosts.map((post) => ({
+      "@type": "BlogPosting",
+      headline: post.title,
+      description: post.metaDescription,
+      keywords: [post.mainKeyword],
+      mainEntityOfPage: `https://www.djvicle.de/blog/${post.slug}`,
+      url: `https://www.djvicle.de/blog/${post.slug}`,
+      author: {
+        "@type": "Person",
+        name: "DJ VICLE",
+      },
+      publisher: {
+        "@type": "Organization",
+        name: "DJ VICLE",
+        url: "https://www.djvicle.de",
+      },
+    })),
+  };
+
   return (
     <main className="min-h-screen bg-white text-[#2A2A2A]">
       <Header />
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
 
       <section className="mx-auto max-w-6xl px-6 pb-16 pt-36">
         <p className="text-sm uppercase tracking-wide text-[#2A2A2A]/70">Ratgeber & Insights</p>
