@@ -28,7 +28,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return {
     title: location.seoTitle,
     description: location.metaDescription,
-    keywords: [location.mainKeyword, ...location.seoKeywords, ...location.secondaryKeywords],
+    keywords: [
+      location.mainKeyword,
+      ...location.seoKeywords,
+      ...location.secondaryKeywords,
+      "deutsch russischer dj",
+      "russischer dj",
+      "deutscher dj",
+    ],
     alternates: {
       canonical: `https://www.djvicle.de/standorte/${location.slug}`,
     },
@@ -67,9 +74,17 @@ export default async function LocationPage({ params }: PageProps) {
       name: location.city,
     },
     serviceType: "DJ Service für Hochzeiten, Firmenfeiern und Events",
-    keywords: [location.mainKeyword, ...location.seoKeywords, ...location.secondaryKeywords],
+    keywords: [
+      location.mainKeyword,
+      ...location.seoKeywords,
+      ...location.secondaryKeywords,
+      "deutsch russischer dj",
+      "russischer dj",
+      "deutscher dj",
+    ],
     url: `https://www.djvicle.de/standorte/${location.slug}`,
     description: location.metaDescription,
+    inLanguage: "de-DE",
   };
 
   return (
