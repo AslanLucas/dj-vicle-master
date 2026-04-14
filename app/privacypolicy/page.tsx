@@ -1,20 +1,38 @@
-"use client";
-
+import type { Metadata } from "next";
 import Header from "@/sections/header";
 import Footer from "@/sections/footer";
-import {useEffect} from "react";
 import Sectionprivacypolicy from "@/sections/sectionprivacpolicy";
 
-export default function PrivacyPolicyPage() {
-    useEffect(() => {
-        window.scrollTo(0, 0);
-    }, []);
+export const metadata: Metadata = {
+  title: "Datenschutzerklärung | DJ VICLE",
+  description: "Datenschutzerklärung von DJ VICLE inklusive Informationen zur Datenverarbeitung.",
+  alternates: {
+    canonical: "https://www.djvicle.de/privacypolicy",
+  },
+};
 
-    return (
-        <>
-            <Header />
-            <Sectionprivacypolicy/>
-            <Footer />
-        </>
-    );
+const privacySchema = {
+  "@context": "https://schema.org",
+  "@type": "PrivacyPolicy",
+  name: "Datenschutzerklärung",
+  url: "https://www.djvicle.de/privacypolicy",
+  publisher: {
+    "@type": "Organization",
+    name: "DJ VICLE",
+    url: "https://www.djvicle.de",
+  },
+};
+
+export default function PrivacyPolicyPage() {
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(privacySchema) }}
+      />
+      <Header />
+      <Sectionprivacypolicy />
+      <Footer />
+    </>
+  );
 }
