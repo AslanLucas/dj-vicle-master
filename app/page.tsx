@@ -9,6 +9,7 @@ import StepsTimeline from "@/sections/steps";
 import ContactSection from "@/sections/contact";
 import Genres from "@/sections/genres";
 import EventTech from "@/sections/eventtech";
+import BlogSection from "@/sections/blog";
 
 const homePageSchema = {
   "@context": "https://schema.org",
@@ -51,7 +52,8 @@ const homePageSchema = {
         { "@type": "WebPageElement", name: "Services", url: "https://www.djvicle.de/#services" },
         { "@type": "WebPageElement", name: "Eventtechnik", url: "https://www.djvicle.de/#eventtech" },
         { "@type": "WebPageElement", name: "Ablauf", url: "https://www.djvicle.de/#steps" },
-        { "@type": "WebPageElement", name: "Kontakt", url: "https://www.djvicle.de/#contact" }
+        { "@type": "WebPageElement", name: "Kontakt", url: "https://www.djvicle.de/#contact" },
+        { "@type": "WebPageElement", name: "Blog", url: "https://www.djvicle.de/#blog" }
       ]
     },
     {
@@ -109,6 +111,7 @@ export default function HomePage() {
       <Services />
       <EventTech />
       <StepsTimeline />
+      <BlogSection />
       <ContactSection />
       <Footer />
     </>

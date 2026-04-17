@@ -15,7 +15,7 @@ const navItems = [
     { label: 'Über mich', id: 'story' },
     { label: 'Kontakt', id: 'contact' },
     { label: 'Galerie', id: 'gallery' },
-    { label: 'Blog', href: '/blog' },
+    { label: 'Blog', id: 'blog' },
 ]
 
 export default function Header() {
