@@ -9,7 +9,14 @@ import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 
-const navItems = [
+type NavItem = {
+    label: string
+    id?: string
+    href?: string
+}
+
+const navItems: NavItem[] = [
+
     { label: 'Home', id: 'hero' },
     { label: 'Leistungen', id: 'services' },
     { label: 'Über mich', id: 'story' },
@@ -42,7 +49,7 @@ export default function Header() {
 
     useEffect(() => {
         const sections = navItems
-            .filter((item): item is { label: string; id: string; href?: string } => Boolean(item.id))
+            .filter((item): item is NavItem & { id: string } => Boolean(item.id))
             .map((item) => document.getElementById(item.id))
             .filter(Boolean) as HTMLElement[]
 
