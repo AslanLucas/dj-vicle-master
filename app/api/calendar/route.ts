@@ -4,12 +4,23 @@ const BOOKED_COLOR_ID = "11"; // 🔴 Rot = gebucht
 
 export async function GET() {
     try {
-        const credentials = JSON.parse(
-            Buffer.from(
-                process.env.GOOGLE_SERVICE_ACCOUNT_KEY_BASE64!,
-                "base64"
-            ).toString("utf-8")
-        );
+function getGoogleCredentials() {
+    const base64Key = process.env.GOOGLE_SERVICE_ACCOUNT_KEY_BASE64;
+    const rawKey = process.env.GOOGLE_SERVICE_ACCOUNT_KEY;
+
+    if (base64Key) {
+        return JSON.parse(Buffer.from(base64Key, "base64").toString("utf-8"));
+    }
+
+    if (rawKey) {
+        return JSON.parse(rawKey);
+    }
+
+    throw new Error(
+        "Missing GOOGLE_SERVICE_ACCOUNT_KEY_BASE64 or GOOGLE_SERVICE_ACCOUNT_KEY"
+    );
+}
+        const credentials = getGoogleCredentials();
 
         const auth = new google.auth.GoogleAuth({
             credentials,
@@ -33,7 +44,10 @@ export async function GET() {
                 status: event.status,
                 colorId: event.colorId,
                 organizer: event.organizer?.email,
-                calendarId: event.organizer?.email === process.env.GOOGLE_CALENDAR_ID ? "MATCH" : "DIFF",
+                calendarId:
+                    event.organizer?.email === process.env.GOOGLE_CALENDAR_ID
+                        ? "MATCH"
+                        : "DIFF",
             });
         });
 
