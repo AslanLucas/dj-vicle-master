@@ -3,6 +3,7 @@ export type BlogPost = {
   title: string;
   excerpt: string;
   mainKeyword: string;
+  strategicGoal: string;
   metaTitle: string;
   metaDescription: string;
   cta: string;
@@ -20,6 +21,7 @@ export const blogPosts: BlogPost[] = [
     excerpt:
       "Ein praxisnaher Leitfaden für Paare, die ihre deutsch-russische Hochzeit emotional, modern und mit einer dauerhaft vollen Tanzfläche gestalten möchten.",
     mainKeyword: "deutsch russischer dj",
+    strategicGoal: "Awareness",
     metaTitle: "Deutsch-russische Hochzeit planen: Musik, Ablauf & DJ-Tipps | DJ VICLE",
     metaDescription:
       "So gelingt eure deutsch-russische Hochzeit: Musikmix, Traditionen, Ablauf und Profi-Tipps vom deutsch russischen DJ für eine volle Tanzfläche.",
@@ -81,6 +83,7 @@ export const blogPosts: BlogPost[] = [
     excerpt:
       "So erkennt ihr einen professionellen Hochzeits- und Event-DJ, der nicht nur Musik spielt, sondern Stimmung, Ablauf und Energie eures Events aktiv steuert.",
     mainKeyword: "hochzeits dj",
+    strategicGoal: "Consideration",
     metaTitle: "Guten Hochzeits-DJ finden: 10 Profi-Kriterien für eure Buchung | DJ VICLE",
     metaDescription:
       "Wie erkennt ihr einen professionellen Hochzeits- oder Event-DJ? 10 klare Kriterien zu Ablauf, Technik, Musikkompetenz und Zuverlässigkeit.",
@@ -128,6 +131,7 @@ export const blogPosts: BlogPost[] = [
     excerpt:
       "Ein transparenter Einblick in den Buchungsablauf: von der ersten Anfrage bis zur professionellen musikalischen Führung am Eventtag.",
     mainKeyword: "dj buchen",
+    strategicGoal: "Conversion",
     metaTitle: "DJ buchen leicht gemacht: Ablauf, Leistungen & Anfrage | DJ VICLE",
     metaDescription:
       "So läuft eure DJ-Buchung bei DJ VICLE: Erstgespräch, Musikplanung, Technik und Eventtag. Jetzt unverbindlich DJ für Hochzeit oder Event anfragen.",
