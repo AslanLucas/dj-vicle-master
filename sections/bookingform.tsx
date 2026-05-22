@@ -26,6 +26,333 @@ type Step =
     | "contact"
     | "done";
 
+type BookingFormState = {
+    reason: string;
+    date: string;
+    eventType: string;
+    weddingType: string;
+    weddingOther: string;
+    birthdayAge: string;
+    hasLocationPhotos: string;
+    locationPhotos: File[];
+    equipmentNeeded: string;
+    equipmentMulti: string[];
+    coldFireDuration: string;
+    coldFireCustom: string;
+    equipmentDetail: string;
+    existingTech: string;
+    guests: string;
+    music: string[];
+    timeFrom: string;
+    timeTo: string;
+    delivery: string;
+    locationName: string;
+    locationStreet: string;
+    locationZip: string;
+    locationCity: string;
+    company: string;
+    lastName: string;
+    firstName: string;
+    phone: string;
+    email: string;
+    message: string;
+};
+
+type FormField = keyof BookingFormState;
+type FormErrors = Partial<Record<FormField, string>>;
+
+const initialForm: BookingFormState = {
+    reason: "",
+    date: "",
+    eventType: "",
+    weddingType: "",
+    weddingOther: "",
+    birthdayAge: "",
+    hasLocationPhotos: "",
+    locationPhotos: [],
+    equipmentNeeded: "",
+    equipmentMulti: [],
+    coldFireDuration: "",
+    coldFireCustom: "",
+    equipmentDetail: "",
+    existingTech: "",
+    guests: "",
+    music: [],
+    timeFrom: "",
+    timeTo: "",
+    delivery: "",
+    locationName: "",
+    locationStreet: "",
+    locationZip: "",
+    locationCity: "",
+    company: "",
+    lastName: "",
+    firstName: "",
+    phone: "",
+    email: "",
+    message: "",
+};
+
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
+const PHONE_REGEX = /^\d{7,15}$/;
+const NAME_REGEX = /^[A-Za-zÀ-ÖØ-öø-ÿÄÖÜäöüß' -]{2,60}$/;
+const CITY_REGEX = /^[A-Za-zÀ-ÖØ-öø-ÿÄÖÜäöüß.' -]{2,80}$/;
+const STREET_REGEX = /^[A-Za-zÀ-ÖØ-öø-ÿÄÖÜäöüß0-9.' /-]{3,120}$/;
+const LOCATION_NAME_REGEX = /^[A-Za-zÀ-ÖØ-öø-ÿÄÖÜäöüß0-9.' &()/,-]{2,120}$/;
+const TIME_REGEX = /^([01]\d|2[0-3]):[0-5]\d$/;
+
+const onlyDigits = (value: string, maxLength?: number) =>
+    value.replace(/\D/g, "").slice(0, maxLength);
+
+const normalizeText = (value: string, maxLength: number) =>
+    value.replace(/\s{2,}/g, " ").slice(0, maxLength);
+
+const onlyEmailChars = (value: string) =>
+    value.replace(/[^A-Za-z0-9.!#$%&'*+/=?^_`{|}~@-]/g, "").toLowerCase().slice(0, 120);
+
+const onlyNameChars = (value: string, maxLength: number) =>
+    normalizeText(value.replace(/[^A-Za-zÀ-ÖØ-öø-ÿÄÖÜäöüß' -]/g, ""), maxLength);
+
+const onlyCityChars = (value: string, maxLength: number) =>
+    normalizeText(value.replace(/[^A-Za-zÀ-ÖØ-öø-ÿÄÖÜäöüß.' -]/g, ""), maxLength);
+
+const onlyStreetChars = (value: string, maxLength: number) =>
+    normalizeText(value.replace(/[^A-Za-zÀ-ÖØ-öø-ÿÄÖÜäöüß0-9.' /-]/g, ""), maxLength);
+
+const onlyLocationNameChars = (value: string, maxLength: number) =>
+    normalizeText(value.replace(/[^A-Za-zÀ-ÖØ-öø-ÿÄÖÜäöüß0-9.' &()/,-]/g, ""), maxLength);
+
+const onlyCompanyChars = (value: string, maxLength: number) =>
+    normalizeText(value.replace(/[^A-Za-zÀ-ÖØ-öø-ÿÄÖÜäöüß0-9.' &()/,+-]/g, ""), maxLength);
+
+const normalizeFieldValue = (
+    field: FormField,
+    value: BookingFormState[FormField]
+): BookingFormState[FormField] => {
+    if (Array.isArray(value)) return value;
+
+    const stringValue = String(value);
+
+    switch (field) {
+        case "email":
+            return onlyEmailChars(stringValue) as BookingFormState[FormField];
+        case "phone":
+            return onlyDigits(stringValue, 15) as BookingFormState[FormField];
+        case "locationZip":
+            return onlyDigits(stringValue, 5) as BookingFormState[FormField];
+        case "birthdayAge":
+            return onlyDigits(stringValue, 3) as BookingFormState[FormField];
+        case "guests":
+            return onlyDigits(stringValue, 6) as BookingFormState[FormField];
+        case "coldFireCustom":
+            return onlyDigits(stringValue, 2) as BookingFormState[FormField];
+        case "firstName":
+        case "lastName":
+            return onlyNameChars(stringValue, 60) as BookingFormState[FormField];
+        case "locationCity":
+            return onlyCityChars(stringValue, 80) as BookingFormState[FormField];
+        case "locationName":
+            return onlyLocationNameChars(stringValue, 120) as BookingFormState[FormField];
+        case "locationStreet":
+            return onlyStreetChars(stringValue, 120) as BookingFormState[FormField];
+        case "company":
+            return onlyCompanyChars(stringValue, 100) as BookingFormState[FormField];
+        case "weddingOther":
+            return onlyLocationNameChars(stringValue, 120) as BookingFormState[FormField];
+        case "equipmentDetail":
+        case "existingTech":
+        case "message":
+            return stringValue.slice(0, 1200) as BookingFormState[FormField];
+        default:
+            return value;
+    }
+};
+
+const isValidPhone = (value: string) => PHONE_REGEX.test(value);
+
+const validateFiles = (files: File[]) => {
+    if (files.length === 0) return "Bitte lade mindestens ein Bild hoch.";
+    if (files.length > 10) return "Bitte maximal 10 Bilder hochladen.";
+
+    const invalidType = files.find((file) => !file.type.startsWith("image/"));
+    if (invalidType) return "Es sind nur Bilddateien erlaubt.";
+
+    const tooLarge = files.find((file) => file.size > 8 * 1024 * 1024);
+    if (tooLarge) return "Ein Bild darf maximal 8 MB groß sein.";
+
+    return "";
+};
+
+const validateFieldValue = (
+    field: FormField,
+    value: BookingFormState[FormField],
+    form: BookingFormState
+): string => {
+    const textValue = typeof value === "string" ? value.trim() : "";
+
+    switch (field) {
+        case "reason":
+            return textValue ? "" : "Bitte wähle einen Anfragegrund aus.";
+
+        case "date":
+            return textValue ? "" : "Bitte wähle ein Datum aus.";
+
+        case "eventType":
+            return textValue ? "" : "Bitte wähle eine Veranstaltungsart aus.";
+
+        case "weddingType":
+            return textValue ? "" : "Bitte wähle eine Hochzeitsart aus.";
+
+        case "weddingOther":
+            if (
+                (form.eventType === "other" || form.weddingType === "Sonstiges") &&
+                textValue.length < 2
+            ) {
+                return "Bitte gib mindestens 2 Zeichen ein.";
+            }
+            return textValue.length > 120 ? "Bitte maximal 120 Zeichen eingeben." : "";
+
+        case "birthdayAge": {
+            if (!textValue) return "Bitte gib dein Alter ein.";
+            const age = Number(textValue);
+            if (!Number.isInteger(age) || age < 1 || age > 120) {
+                return "Bitte gib ein gültiges Alter zwischen 1 und 120 ein.";
+            }
+            return "";
+        }
+
+        case "hasLocationPhotos":
+            return textValue ? "" : "Bitte wähle Ja oder Nein aus.";
+
+        case "locationPhotos":
+            return form.hasLocationPhotos === "yes" ? validateFiles(value as File[]) : "";
+
+        case "equipmentNeeded":
+            return form.reason === "event" && !textValue
+                ? "Bitte wähle Ja oder Nein aus."
+                : "";
+
+        case "equipmentMulti": {
+            const selected = value as string[];
+            if ((form.reason === "gallery" || form.equipmentNeeded === "yes") && selected.length === 0) {
+                return "Bitte wähle mindestens eine Equipment-Kategorie aus.";
+            }
+            if (selected.includes("Kaltfeuerwerk") && !form.coldFireDuration) {
+                return "Bitte wähle die Dauer für das Kaltfeuerwerk aus.";
+            }
+            if (
+                selected.includes("Kaltfeuerwerk") &&
+                form.coldFireDuration === "custom" &&
+                !form.coldFireCustom.trim()
+            ) {
+                return "Bitte gib die Dauer in Minuten an.";
+            }
+            return "";
+        }
+
+        case "coldFireDuration":
+            return form.equipmentMulti.includes("Kaltfeuerwerk") && !textValue
+                ? "Bitte wähle eine Dauer aus."
+                : "";
+
+        case "coldFireCustom": {
+            if (
+                form.equipmentMulti.includes("Kaltfeuerwerk") &&
+                form.coldFireDuration === "custom"
+            ) {
+                if (!textValue) return "Bitte gib die Dauer in Minuten an.";
+                const minutes = Number(textValue);
+                if (!Number.isInteger(minutes) || minutes < 1 || minutes > 60) {
+                    return "Bitte gib eine Dauer zwischen 1 und 60 Minuten ein.";
+                }
+            }
+            return "";
+        }
+
+        case "equipmentDetail":
+            return textValue.length > 1200 ? "Bitte maximal 1200 Zeichen eingeben." : "";
+
+        case "existingTech":
+            return textValue.length > 1200 ? "Bitte maximal 1200 Zeichen eingeben." : "";
+
+        case "guests": {
+            if (!textValue) return "Bitte gib die Gästeanzahl ein.";
+            const guests = Number(textValue);
+            if (!Number.isInteger(guests) || guests < 1 || guests > 200000) {
+                return "Bitte gib eine gültige Personenanzahl ein.";
+            }
+            return "";
+        }
+
+        case "timeFrom":
+            if (!textValue) return "Bitte gib eine Startzeit ein.";
+            return TIME_REGEX.test(textValue) ? "" : "Bitte gib eine gültige Uhrzeit ein.";
+
+        case "timeTo":
+            if (!textValue) return "Bitte gib eine Endzeit ein.";
+            if (!TIME_REGEX.test(textValue)) return "Bitte gib eine gültige Uhrzeit ein.";
+            if (form.timeFrom && textValue === form.timeFrom) {
+                return "Start- und Endzeit dürfen nicht gleich sein.";
+            }
+            return "";
+
+        case "delivery":
+            return form.reason === "gallery" && !textValue
+                ? "Bitte wähle Ja oder Nein aus."
+                : "";
+
+        case "locationName":
+            if (!textValue) return "Bitte gib den Namen der Location ein.";
+            return LOCATION_NAME_REGEX.test(textValue)
+                ? ""
+                : "Bitte gib einen gültigen Location-Namen ein.";
+
+        case "locationStreet":
+            if (!textValue) return "Bitte gib Straße und Hausnummer ein.";
+            if (!STREET_REGEX.test(textValue)) return "Bitte gib eine gültige Straße ein.";
+            if (!/\d/.test(textValue)) return "Bitte gib auch die Hausnummer an.";
+            return "";
+
+        case "locationZip":
+            if (!textValue) return "Bitte gib die PLZ ein.";
+            return /^\d{5}$/.test(textValue) ? "" : "Bitte gib eine gültige 5-stellige PLZ ein.";
+
+        case "locationCity":
+            if (!textValue) return "Bitte gib den Ort ein.";
+            return CITY_REGEX.test(textValue) ? "" : "Bitte gib einen gültigen Ort ein.";
+
+        case "company":
+            return textValue.length > 100 ? "Bitte maximal 100 Zeichen eingeben." : "";
+
+        case "firstName":
+            if (!textValue) return "Bitte gib deinen Vornamen ein.";
+            return NAME_REGEX.test(textValue) ? "" : "Bitte gib einen gültigen Vornamen ein.";
+
+        case "lastName":
+            if (!textValue) return "Bitte gib deinen Nachnamen ein.";
+            return NAME_REGEX.test(textValue) ? "" : "Bitte gib einen gültigen Nachnamen ein.";
+
+        case "phone":
+            if (!textValue) return "Bitte gib deine Telefonnummer ein.";
+            return isValidPhone(textValue)
+                ? ""
+                : "Bitte gib eine gültige Telefonnummer mit 7 bis 15 Ziffern ein.";
+
+        case "email":
+            if (!textValue) return "Bitte gib deine E-Mail-Adresse ein.";
+            return EMAIL_REGEX.test(textValue)
+                ? ""
+                : "Bitte gib eine gültige E-Mail-Adresse ein.";
+
+        case "message":
+            return textValue.length > 1200 ? "Bitte maximal 1200 Zeichen eingeben." : "";
+
+        default:
+            return "";
+    }
+};
+
+
 const cx = (...classes: (string | false | undefined | null)[]) =>
     classes.filter(Boolean).join(" ");
 
@@ -37,7 +364,7 @@ function PrimaryButton({
                        }: {
     children: React.ReactNode;
     disabled?: boolean;
-    onClick?: () => void;
+    onClick?: () => void | Promise<void> | string;
     type?: "button" | "submit";
 }) {
     return (
@@ -61,7 +388,7 @@ function GhostButton({
                          onClick,
                      }: {
     children: React.ReactNode;
-    onClick?: () => void;
+    onClick?: () => void | Promise<void> | string;
 }) {
     return (
         <button
@@ -106,13 +433,23 @@ function InputField({
                         placeholder,
                         required,
                         type = "text",
+                        error,
+                        maxLength,
+                        inputMode,
+                        autoComplete,
+                        onBlur,
                     }: {
     label: string;
     value: string;
     placeholder?: string;
     required?: boolean;
     type?: string;
+    error?: string;
+    maxLength?: number;
+    inputMode?: React.HTMLAttributes<HTMLInputElement>["inputMode"];
+    autoComplete?: string;
     onChange: (v: string) => void;
+    onBlur?: () => void;
 }) {
     return (
         <div className="text-left w-full">
@@ -123,9 +460,20 @@ function InputField({
                 type={type}
                 value={value}
                 placeholder={placeholder}
+                maxLength={maxLength}
+                inputMode={inputMode}
+                autoComplete={autoComplete}
+                aria-invalid={!!error}
+                onBlur={onBlur}
                 onChange={(e) => onChange(e.target.value)}
-                className="w-full rounded-lg border border-black/30 px-3 py-2 focus:border-black outline-none"
+                className={cx(
+                    "w-full rounded-lg border px-3 py-2 outline-none transition",
+                    error
+                        ? "border-red-500 focus:border-red-600"
+                        : "border-black/30 focus:border-black"
+                )}
             />
+            {error && <p className="mt-1 text-xs font-medium text-red-600">{error}</p>}
         </div>
     );
 }
@@ -136,12 +484,18 @@ function InputArea({
                        onChange,
                        required,
                        placeholder,
+                       error,
+                       maxLength = 1200,
+                       onBlur,
                    }: {
     label: string;
     value: string;
     required?: boolean;
     placeholder?: string;
+    error?: string;
+    maxLength?: number;
     onChange: (v: string) => void;
+    onBlur?: () => void;
 }) {
     return (
         <div className="text-left w-full">
@@ -152,9 +506,27 @@ function InputArea({
                 rows={4}
                 value={value}
                 placeholder={placeholder}
+                maxLength={maxLength}
+                aria-invalid={!!error}
+                onBlur={onBlur}
                 onChange={(e) => onChange(e.target.value)}
-                className="w-full rounded-lg border border-black/30 px-3 py-2 resize-none focus:border-black outline-none"
+                className={cx(
+                    "w-full rounded-lg border px-3 py-2 resize-none outline-none transition",
+                    error
+                        ? "border-red-500 focus:border-red-600"
+                        : "border-black/30 focus:border-black"
+                )}
             />
+            <div className="mt-1 flex justify-between gap-3">
+                {error ? (
+                    <p className="text-xs font-medium text-red-600">{error}</p>
+                ) : (
+                    <span />
+                )}
+                <span className="text-xs text-gray-400">
+                    {value.length}/{maxLength}
+                </span>
+            </div>
         </div>
     );
 }
@@ -171,61 +543,101 @@ export default function BookingForm() {
     const [step, setStep] = useState<Step>("reason");
     const [showSuccess, setShowSuccess] = useState(false);
 
-    const [form, setForm] = useState({
-        reason: "",
-        date: "",
-        eventType: "",
-        weddingType: "",
-        weddingOther: "",
-        birthdayAge: "",
-        hasLocationPhotos: "",
-        locationPhotos: [] as File[],
-        equipmentNeeded: "",
-        equipmentMulti: [] as string[],
-        coldFireDuration: "",
-        coldFireCustom: "",
-        equipmentDetail: "",
-        existingTech: "",
-        guests: "",
-        music: [] as string[],
-        timeFrom: "",
-        timeTo: "",
-        delivery: "",
-        locationName: "",
-        locationStreet: "",
-        locationZip: "",
-        locationCity: "",
-        company: "",
-        lastName: "",
-        firstName: "",
-        phone: "",
-        email: "",
-        message: "",
-    });
+    const [form, setForm] = useState<BookingFormState>(initialForm);
+    const [errors, setErrors] = useState<FormErrors>({});
 
-    const update = (field: keyof typeof form, value: any) =>
-        setForm((f) => ({ ...f, [field]: value }));
+    const setFieldError = (field: FormField, value: BookingFormState[FormField], nextForm = form) => {
+        setErrors((current) => ({
+            ...current,
+            [field]: validateFieldValue(field, value, nextForm),
+        }));
+    };
 
-    const toggleArray = (field: keyof typeof form, value: string) => {
+    const update = (field: FormField, value: BookingFormState[FormField]) => {
+        const normalizedValue = normalizeFieldValue(field, value);
+
         setForm((prev) => {
-            // @ts-ignore
-            const arr: string[] = prev[field];
+            const next = { ...prev, [field]: normalizedValue };
+            setFieldError(field, normalizedValue, next);
+            return next;
+        });
+    };
+
+    const validateFields = (fields: FormField[]) => {
+        const nextErrors = fields.reduce<FormErrors>((acc, field) => {
+            acc[field] = validateFieldValue(field, form[field], form);
+            return acc;
+        }, {});
+
+        setErrors((current) => ({ ...current, ...nextErrors }));
+
+        return Object.values(nextErrors).every((error) => !error);
+    };
+
+    const fieldsAreValid = (fields: FormField[]) =>
+        fields.every((field) => !validateFieldValue(field, form[field], form));
+
+    const validateAndGo = (nextStep: Step, fields: FormField[]) => {
+        if (validateFields(fields)) setStep(nextStep);
+    };
+
+    const toggleArray = (field: "equipmentMulti" | "music", value: string) => {
+        setForm((prev) => {
+            const arr = prev[field];
+
+            let next: BookingFormState;
 
             // ✅ Spezialfall: Kaltfeuerwerk wird ABGEWÄHLT → reset duration
-            if (value === "Kaltfeuerwerk" && arr.includes(value)) {
-                return {
+            if (field === "equipmentMulti" && value === "Kaltfeuerwerk" && arr.includes(value)) {
+                next = {
                     ...prev,
                     equipmentMulti: arr.filter((i) => i !== value),
                     coldFireDuration: "",
                     coldFireCustom: "",
                 };
+            } else {
+                next = arr.includes(value)
+                    ? { ...prev, [field]: arr.filter((i) => i !== value) }
+                    : { ...prev, [field]: [...arr, value] };
             }
 
-            // Normal toggle
-            return arr.includes(value)
-                ? { ...prev, [field]: arr.filter((i) => i !== value) }
-                : { ...prev, [field]: [...arr, value] };
+            setErrors((current) => ({
+                ...current,
+                [field]: validateFieldValue(field, next[field], next),
+                coldFireDuration: validateFieldValue("coldFireDuration", next.coldFireDuration, next),
+                coldFireCustom: validateFieldValue("coldFireCustom", next.coldFireCustom, next),
+            }));
+
+            return next;
         });
+    };
+
+    const contactFields: FormField[] = ["firstName", "lastName", "phone", "email"];
+    const locationFields: FormField[] = [
+        "locationName",
+        "locationStreet",
+        "locationZip",
+        "locationCity",
+    ];
+
+    const needsLocation =
+        form.reason === "event" || (form.reason === "gallery" && form.delivery === "yes");
+
+    const handleSubmit = async () => {
+        const submitFields: FormField[] = [...contactFields];
+
+        if (needsLocation) submitFields.push(...locationFields);
+
+        if (form.eventType === "birthday") submitFields.push("birthdayAge");
+        if (form.hasLocationPhotos === "yes") submitFields.push("locationPhotos");
+        if (form.equipmentMulti.includes("Kaltfeuerwerk")) {
+            submitFields.push("coldFireDuration");
+            if (form.coldFireDuration === "custom") submitFields.push("coldFireCustom");
+        }
+
+        if (!validateFields(submitFields)) return;
+
+        await submit();
     };
 
 
@@ -454,6 +866,8 @@ ${form.message || "-"}
                                         label="Bitte angeben"
                                         value={form.weddingOther}
                                         onChange={(v) => update("weddingOther", v)}
+                                        onBlur={() => setFieldError("weddingOther", form.weddingOther)}
+                                        error={errors.weddingOther}
                                         placeholder="Art der Veranstaltung"
                                         required
                                     />
@@ -465,11 +879,10 @@ ${form.message || "-"}
                                     Zurück
                                 </GhostButton>
                                 <PrimaryButton
-                                    disabled={
-                                        !form.eventType ||
-                                        (form.eventType === "other" && !form.weddingOther.trim())
-                                    }
+                                    disabled={!fieldsAreValid(["eventType", "weddingOther"])}
                                     onClick={() => {
+                                        if (!validateFields(["eventType", "weddingOther"])) return;
+
                                         if (form.eventType === "wedding") setStep("wedding-type");
                                         else if (form.eventType === "birthday") setStep("birthday-age");
                                         else if (form.eventType === "club") setStep("time");
@@ -519,6 +932,8 @@ ${form.message || "-"}
                                         label="Bitte angeben"
                                         value={form.weddingOther}
                                         onChange={(v) => update("weddingOther", v)}
+                                        onBlur={() => setFieldError("weddingOther", form.weddingOther)}
+                                        error={errors.weddingOther}
                                         placeholder="Hochzeitsart"
                                         required
                                     />
@@ -530,9 +945,8 @@ ${form.message || "-"}
                                     Zurück
                                 </GhostButton>
                                 <PrimaryButton
-                                    disabled={!form.weddingType ||
-                                        (form.weddingType === "Sonstiges" && !form.weddingOther.trim())}
-                                    onClick={() => setStep("location-photos")}
+                                    disabled={!fieldsAreValid(["weddingType", "weddingOther"])}
+                                    onClick={() => validateAndGo("location-photos", ["weddingType", "weddingOther"])}
                                 >
                                     Weiter
                                 </PrimaryButton>
@@ -553,7 +967,11 @@ ${form.message || "-"}
                                 label="Alter"
                                 value={form.birthdayAge}
                                 onChange={(v) => update("birthdayAge", v)}
+                                onBlur={() => setFieldError("birthdayAge", form.birthdayAge)}
+                                error={errors.birthdayAge}
                                 placeholder="z. B. 30"
+                                inputMode="numeric"
+                                maxLength={3}
                                 required
                             />
 
@@ -562,8 +980,8 @@ ${form.message || "-"}
                                     Zurück
                                 </GhostButton>
                                 <PrimaryButton
-                                    disabled={!form.birthdayAge}
-                                    onClick={() => setStep("location-photos")}
+                                    disabled={!fieldsAreValid(["birthdayAge"])}
+                                    onClick={() => validateAndGo("location-photos", ["birthdayAge"])}
                                 >
                                     Weiter
                                 </PrimaryButton>
@@ -612,14 +1030,20 @@ ${form.message || "-"}
                                             required
                                             className="hidden"
                                             onChange={(e) =>
-                                                update("locationPhotos", Array.from(e.target.files || []))
+                                                update("locationPhotos", Array.from(e.target.files || []) as File[])
                                             }
                                         />
                                     </label>
 
-                                    {form.locationPhotos.length > 0 && (
+                                    {form.locationPhotos.length > 0 && !errors.locationPhotos && (
                                         <p className="text-sm text-green-600 mt-2">
                                             {form.locationPhotos.length} Datei(en) hochgeladen
+                                        </p>
+                                    )}
+
+                                    {errors.locationPhotos && (
+                                        <p className="text-sm font-medium text-red-600 mt-2">
+                                            {errors.locationPhotos}
                                         </p>
                                     )}
                                 </div>
@@ -637,11 +1061,8 @@ ${form.message || "-"}
                                 </GhostButton>
 
                                 <PrimaryButton
-                                    disabled={
-                                        !form.hasLocationPhotos ||
-                                        (form.hasLocationPhotos === "yes" && form.locationPhotos.length === 0)
-                                    }
-                                    onClick={() => setStep("equipment-needed")}
+                                    disabled={!fieldsAreValid(["hasLocationPhotos", "locationPhotos"])}
+                                    onClick={() => validateAndGo("equipment-needed", ["hasLocationPhotos", "locationPhotos"])}
                                 >
                                     Weiter
                                 </PrimaryButton>
@@ -729,6 +1150,12 @@ ${form.message || "-"}
                                 ))}
                             </div>
 
+                            {errors.equipmentMulti && (
+                                <p className="mt-3 text-center text-sm font-medium text-red-600">
+                                    {errors.equipmentMulti}
+                                </p>
+                            )}
+
                             {/* 🔥 Zusatzfrage nur wenn Kaltfeuerwerk ausgewählt */}
                             {form.equipmentMulti.includes("Kaltfeuerwerk") && (
                                 <div className="mt-8">
@@ -763,6 +1190,12 @@ ${form.message || "-"}
                                         />
                                     </div>
 
+                                    {errors.coldFireDuration && (
+                                        <p className="mt-3 text-center text-sm font-medium text-red-600">
+                                            {errors.coldFireDuration}
+                                        </p>
+                                    )}
+
                                     {/* Wenn Mehr ausgewählt → Textfeld */}
                                     {form.coldFireDuration === "custom" && (
                                         <div className="mt-5 max-w-md mx-auto">
@@ -770,7 +1203,11 @@ ${form.message || "-"}
                                                 label="Bitte Dauer angeben (in Minuten)"
                                                 value={form.coldFireCustom}
                                                 onChange={(v) => update("coldFireCustom", v)}
-                                                placeholder="z. B. 2 Minuten"
+                                                onBlur={() => setFieldError("coldFireCustom", form.coldFireCustom)}
+                                                error={errors.coldFireCustom}
+                                                placeholder="z. B. 2"
+                                                inputMode="numeric"
+                                                maxLength={2}
                                                 required
                                             />
                                         </div>
@@ -789,14 +1226,14 @@ ${form.message || "-"}
                                     Zurück
                                 </GhostButton>
                                 <PrimaryButton
-                                    disabled={
-                                        form.equipmentMulti.includes("Kaltfeuerwerk") &&
-                                        (
-                                            !form.coldFireDuration ||
-                                            (form.coldFireDuration === "custom" && !form.coldFireCustom.trim())
-                                        )
+                                    disabled={!fieldsAreValid(["equipmentMulti", "coldFireDuration", "coldFireCustom"])}
+                                    onClick={() =>
+                                        validateAndGo("equipment-detail", [
+                                            "equipmentMulti",
+                                            "coldFireDuration",
+                                            "coldFireCustom",
+                                        ])
                                     }
-                                    onClick={() => setStep("equipment-detail")}
                                 >
                                     Weiter
                                 </PrimaryButton>
@@ -818,6 +1255,8 @@ ${form.message || "-"}
                                 label="Details"
                                 value={form.equipmentDetail}
                                 onChange={(v) => update("equipmentDetail", v)}
+                                onBlur={() => setFieldError("equipmentDetail", form.equipmentDetail)}
+                                error={errors.equipmentDetail}
                                 placeholder="Falls dir ein Aufbau gefällt oder du spezielle Wünsche hast, trag sie hier ein. Wenn nicht passe ich die Anlage automatisch an die Location an. Oder siehe Seite Equipment."
                             />
 
@@ -857,6 +1296,8 @@ ${form.message || "-"}
                                 label="Beschreibe die vorhandene Technik"
                                 value={form.existingTech}
                                 onChange={(v) => update("existingTech", v)}
+                                onBlur={() => setFieldError("existingTech", form.existingTech)}
+                                error={errors.existingTech}
                                 placeholder="Bitte beschreiben..."
                             />
 
@@ -884,7 +1325,11 @@ ${form.message || "-"}
                                 label="Anzahl der Personen"
                                 value={form.guests}
                                 onChange={(v) => update("guests", v)}
+                                onBlur={() => setFieldError("guests", form.guests)}
+                                error={errors.guests}
                                 placeholder="z. B. 80"
+                                inputMode="numeric"
+                                maxLength={6}
                                 required
                             />
 
@@ -902,8 +1347,8 @@ ${form.message || "-"}
                                     Zurück
                                 </GhostButton>
                                 <PrimaryButton
-                                    disabled={!form.guests}
-                                    onClick={() => setStep("music")}
+                                    disabled={!fieldsAreValid(["guests"])}
+                                    onClick={() => validateAndGo("music", ["guests"])}
                                 >
                                     Weiter
                                 </PrimaryButton>
@@ -992,6 +1437,8 @@ ${form.message || "-"}
                                     type="time"
                                     value={form.timeFrom}
                                     onChange={(v) => update("timeFrom", v)}
+                                    onBlur={() => setFieldError("timeFrom", form.timeFrom)}
+                                    error={errors.timeFrom}
                                     required
                                 />
                                 <InputField
@@ -999,6 +1446,8 @@ ${form.message || "-"}
                                     type="time"
                                     value={form.timeTo}
                                     onChange={(v) => update("timeTo", v)}
+                                    onBlur={() => setFieldError("timeTo", form.timeTo)}
+                                    error={errors.timeTo}
                                     required
                                 />
                             </div>
@@ -1013,11 +1462,12 @@ ${form.message || "-"}
                                     Zurück
                                 </GhostButton>
                                 <PrimaryButton
-                                    disabled={!form.timeFrom || !form.timeTo}
+                                    disabled={!fieldsAreValid(["timeFrom", "timeTo"])}
                                     onClick={() =>
-                                        form.reason === "gallery"
-                                            ? setStep("delivery")
-                                            : setStep("location")
+                                        validateAndGo(
+                                            form.reason === "gallery" ? "delivery" : "location",
+                                            ["timeFrom", "timeTo"]
+                                        )
                                     }
                                 >
                                     Weiter
@@ -1053,8 +1503,10 @@ ${form.message || "-"}
                                     Zurück
                                 </GhostButton>
                                 <PrimaryButton
-                                    disabled={!form.delivery}
+                                    disabled={!fieldsAreValid(["delivery"])}
                                     onClick={() => {
+                                        if (!validateFields(["delivery"])) return;
+
                                         if (form.delivery === "yes") setStep("location");
                                         else setStep("contact");
                                     }}
@@ -1080,32 +1532,41 @@ ${form.message || "-"}
                                     required
                                     value={form.locationName}
                                     onChange={(v) => update("locationName", v)}
+                                    onBlur={() => setFieldError("locationName", form.locationName)}
+                                    error={errors.locationName}
                                     placeholder="z. B. Alter Güterbahnhof"
+                                    maxLength={120}
                                 />
                                 <InputField
                                     label="Straße & Hausnummer"
                                     required
                                     value={form.locationStreet}
                                     onChange={(v) => update("locationStreet", v)}
+                                    onBlur={() => setFieldError("locationStreet", form.locationStreet)}
+                                    error={errors.locationStreet}
                                     placeholder="Musterstraße 10"
+                                    maxLength={120}
                                 />
                                 <InputField
                                     label="PLZ"
                                     required
                                     value={form.locationZip}
-                                    onChange={(v) => {
-                                        if (/^\d*$/.test(v)) update("locationZip", v);
-                                    }}
+                                    onChange={(v) => update("locationZip", v)}
+                                    onBlur={() => setFieldError("locationZip", form.locationZip)}
+                                    error={errors.locationZip}
                                     placeholder="49808"
+                                    inputMode="numeric"
+                                    maxLength={5}
                                 />
                                 <InputField
                                     label="Ort"
                                     required
                                     value={form.locationCity}
-                                    onChange={(v) => {
-                                        if (/^[A-Za-zÄÖÜäöüß\s-]*$/.test(v)) update("locationCity", v);
-                                    }}
+                                    onChange={(v) => update("locationCity", v)}
+                                    onBlur={() => setFieldError("locationCity", form.locationCity)}
+                                    error={errors.locationCity}
                                     placeholder="Lingen"
+                                    maxLength={80}
                                 />
                             </div>
 
@@ -1120,13 +1581,8 @@ ${form.message || "-"}
                                 </GhostButton>
 
                                 <PrimaryButton
-                                    disabled={
-                                        !form.locationName ||
-                                        !form.locationStreet ||
-                                        !form.locationZip ||
-                                        !form.locationCity
-                                    }
-                                    onClick={() => setStep("contact")}
+                                    disabled={!fieldsAreValid(locationFields)}
+                                    onClick={() => validateAndGo("contact", locationFields)}
                                 >
                                     Weiter
                                 </PrimaryButton>
@@ -1148,28 +1604,46 @@ ${form.message || "-"}
                                     label="Firma (optional)"
                                     value={form.company}
                                     onChange={(v) => update("company", v)}
+                                    onBlur={() => setFieldError("company", form.company)}
+                                    error={errors.company}
                                     placeholder="Firma"
+                                    autoComplete="organization"
+                                    maxLength={100}
                                 />
                                 <InputField
                                     label="Vorname"
                                     required
                                     value={form.firstName}
                                     onChange={(v) => update("firstName", v)}
+                                    onBlur={() => setFieldError("firstName", form.firstName)}
+                                    error={errors.firstName}
                                     placeholder="Vorname"
+                                    autoComplete="given-name"
+                                    maxLength={60}
                                 />
                                 <InputField
                                     label="Nachname"
                                     required
                                     value={form.lastName}
                                     onChange={(v) => update("lastName", v)}
+                                    onBlur={() => setFieldError("lastName", form.lastName)}
+                                    error={errors.lastName}
                                     placeholder="Nachname"
+                                    autoComplete="family-name"
+                                    maxLength={60}
                                 />
                                 <InputField
                                     label="Mobiltelefon"
                                     required
                                     value={form.phone}
                                     onChange={(v) => update("phone", v)}
-                                    placeholder="+49 ..."
+                                    onBlur={() => setFieldError("phone", form.phone)}
+                                    error={errors.phone}
+                                    placeholder="01701234567"
+                                    type="tel"
+                                    inputMode="numeric"
+                                    autoComplete="tel"
+                                    maxLength={15}
                                 />
                                 <InputField
                                     label="E-Mail"
@@ -1177,7 +1651,12 @@ ${form.message || "-"}
                                     type="email"
                                     value={form.email}
                                     onChange={(v) => update("email", v)}
+                                    onBlur={() => setFieldError("email", form.email)}
+                                    error={errors.email}
                                     placeholder="mail@example.com"
+                                    inputMode="email"
+                                    autoComplete="email"
+                                    maxLength={120}
                                 />
 
                                 <div className="sm:col-span-2">
@@ -1185,6 +1664,8 @@ ${form.message || "-"}
                                         label="Nachricht (optional)"
                                         value={form.message}
                                         onChange={(v) => update("message", v)}
+                                        onBlur={() => setFieldError("message", form.message)}
+                                        error={errors.message}
                                         placeholder="Zusätzliche Informationen..."
                                     />
                                 </div>
@@ -1205,8 +1686,8 @@ ${form.message || "-"}
                                 </GhostButton>
 
                                 <PrimaryButton
-                                    disabled={!form.firstName || !form.lastName || !form.email}
-                                    onClick={submit}
+                                    disabled={!fieldsAreValid(contactFields)}
+                                    onClick={handleSubmit}
                                 >
                                     Anfrage senden
                                 </PrimaryButton>
