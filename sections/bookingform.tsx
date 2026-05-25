@@ -542,6 +542,7 @@ function StepTitle({ children }: { children: React.ReactNode }) {
 export default function BookingForm() {
     const [step, setStep] = useState<Step>("reason");
     const [showSuccess, setShowSuccess] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const [form, setForm] = useState<BookingFormState>(initialForm);
     const [errors, setErrors] = useState<FormErrors>({});
@@ -624,6 +625,8 @@ export default function BookingForm() {
         form.reason === "event" || (form.reason === "gallery" && form.delivery === "yes");
 
     const handleSubmit = async () => {
+        if (isSubmitting) return;
+
         const submitFields: FormField[] = [...contactFields];
 
         if (needsLocation) submitFields.push(...locationFields);
@@ -642,17 +645,21 @@ export default function BookingForm() {
 
 
     const submit = async () => {
-        // 1) Anfrage in Google Calendar eintragen
-        await fetch("/api/request-booking", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                name: `${form.firstName} ${form.lastName}`,
-                email: form.email,
-                message: form.message,
-                date: form.date
-            }),
-        });
+        if (isSubmitting) return;
+        setIsSubmitting(true);
+
+        try {
+            // 1) Anfrage in Google Calendar eintragen
+            await fetch("/api/request-booking", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    name: `${form.firstName} ${form.lastName}`,
+                    email: form.email,
+                    message: form.message,
+                    date: form.date
+                }),
+            });
 
         const mailMessage = `
 GRUND DER ANFRAGE
@@ -732,22 +739,25 @@ ${form.message || "-"}
 `;
 
 
-        // 2) E-Mail senden
-        await sendEmail({
-            firstName: form.firstName,
-            lastName: form.lastName,
-            email: form.email,
-            phoneNumber: form.phone,
-            company: form.company,
-            message: mailMessage,
-        });
+            // 2) E-Mail senden
+            await sendEmail({
+                firstName: form.firstName,
+                lastName: form.lastName,
+                email: form.email,
+                phoneNumber: form.phone,
+                company: form.company,
+                message: mailMessage,
+            });
 
-        // 3) Success UI
-        setShowSuccess(true);
+            // 3) Success UI
+            setShowSuccess(true);
 
-        setTimeout(() => {
-            window.location.href = "/";
-        }, 3000);
+            setTimeout(() => {
+                window.location.href = "/";
+            }, 3000);
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
 
@@ -1686,10 +1696,10 @@ ${form.message || "-"}
                                 </GhostButton>
 
                                 <PrimaryButton
-                                    disabled={!fieldsAreValid(contactFields)}
+                                    disabled={isSubmitting || !fieldsAreValid(contactFields)}
                                     onClick={handleSubmit}
                                 >
-                                    Anfrage senden
+                                    {isSubmitting ? "Wird gesendet..." : "Anfrage senden"}
                                 </PrimaryButton>
                             </div>
                         </motion.div>
