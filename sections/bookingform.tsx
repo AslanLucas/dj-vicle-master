@@ -654,116 +654,81 @@ export default function BookingForm() {
             }),
         });
 
-const mailMessage = `
-    <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #111;">
+        const mailMessage = `
+GRUND DER ANFRAGE
+${form.reason === "event" ? "Veranstaltung" : "Equipment-Verleih"}
 
-  <div style="margin-bottom: 18px;">
-    <div style="font-size: 22px; font-weight: 800; margin-bottom: 4px;">Grund der Anfrage</div>
-    <div style="font-size: 16px;">${form.reason === "event" ? "Veranstaltung" : "Equipment-Verleih"}</div>
-  </div>
+DATUM
+${form.date || "-"}
 
-  <div style="margin-bottom: 18px;">
-    <div style="font-size: 22px; font-weight: 800; margin-bottom: 4px;">Datum</div>
-    <div style="font-size: 16px;">${form.date || "-"}</div>
-  </div>
 
-  <div style="margin-bottom: 18px;">
-    <div style="font-size: 22px; font-weight: 800; margin-bottom: 4px;">Event-Typ</div>
-    <div style="font-size: 16px;">${form.eventType || "-"}</div>
-  </div>
+Event-Typ:
+${form.eventType || "-"}
 
-  <div style="margin-bottom: 18px;">
-    <div style="font-size: 22px; font-weight: 800; margin-bottom: 4px;">Hochzeitsart</div>
-    <div style="font-size: 16px;">${form.weddingType || "-"}</div>
-  </div>
+Hochzeitsart:
+${form.weddingType || "-"}
 
-  <div style="margin-bottom: 18px;">
-    <div style="font-size: 22px; font-weight: 800; margin-bottom: 4px;">Sonstige Angabe</div>
-    <div style="font-size: 16px;">${form.weddingOther || "-"}</div>
-  </div>
+Sonstige Angabe:
+${form.weddingOther || "-"}
 
-  <div style="margin-bottom: 18px;">
-    <div style="font-size: 22px; font-weight: 800; margin-bottom: 4px;">Geburtstagsalter</div>
-    <div style="font-size: 16px;">${form.birthdayAge || "-"}</div>
-  </div>
+Geburtstagsalter:
+${form.birthdayAge || "-"}
 
-  <div style="margin-bottom: 18px;">
-    <div style="font-size: 22px; font-weight: 800; margin-bottom: 4px;">Bilder vorhanden</div>
-    <div style="font-size: 16px;">${form.hasLocationPhotos === "yes" ? "Ja" : form.hasLocationPhotos === "no" ? "Nein" : "-"}</div>
-  </div>
+Bilder vorhanden:
+${form.hasLocationPhotos === "yes" ? "Ja" : form.hasLocationPhotos === "no" ? "Nein" : "-"}
 
-  <div style="margin-bottom: 18px;">
-    <div style="font-size: 22px; font-weight: 800; margin-bottom: 4px;">Location-Name</div>
-    <div style="font-size: 16px;">${form.locationName || "-"}</div>
-  </div>
+Location-Name:
+${form.locationName || "-"}
 
-  <div style="margin-bottom: 18px;">
-    <div style="font-size: 22px; font-weight: 800; margin-bottom: 4px;">Straße</div>
-    <div style="font-size: 16px;">${form.locationStreet || "-"}</div>
-  </div>
+Straße:
+${form.locationStreet || "-"}
 
-  <div style="margin-bottom: 18px;">
-    <div style="font-size: 22px; font-weight: 800; margin-bottom: 4px;">PLZ / Ort</div>
-    <div style="font-size: 16px;">${form.locationZip || "-"} ${form.locationCity || "-"}</div>
-  </div>
+PLZ / Ort:
+${form.locationZip || "-"} ${form.locationCity || "-"}
 
-  <div style="margin-bottom: 18px;">
-    <div style="font-size: 22px; font-weight: 800; margin-bottom: 4px;">Equipment benötigt</div>
-    <div style="font-size: 16px;">${form.equipmentNeeded === "yes" ? "Ja" : form.equipmentNeeded === "no" ? "Nein" : "-"}</div>
-  </div>
 
-  <div style="margin-bottom: 18px;">
-    <div style="font-size: 22px; font-weight: 800; margin-bottom: 4px;">Gewünschtes Equipment</div>
-    <div style="font-size: 16px;">${form.equipmentMulti.length ? form.equipmentMulti.join(", ") : "-"}</div>
-  </div>
+Equipment benötigt:
+${form.equipmentNeeded === "yes" ? "Ja" : form.equipmentNeeded === "no" ? "Nein" : "-"}
 
-  ${form.equipmentMulti.includes("Kaltfeuerwerk")
-    ? `<div style="margin-bottom: 18px;">
-         <div style="font-size: 22px; font-weight: 800; margin-bottom: 4px;">Kaltfeuerwerk Dauer</div>
-         <div style="font-size: 16px;">${
-           form.coldFireDuration === "custom"
-             ? `${form.coldFireCustom} Minuten`
-             : `${form.coldFireDuration} Sekunden`
-         }</div>
-       </div>`
-    : ""}
+Gewünschtes Equipment:
+${form.equipmentMulti.length ? form.equipmentMulti.join(", ") : "-"}
 
-  <div style="margin-bottom: 18px;">
-    <div style="font-size: 22px; font-weight: 800; margin-bottom: 4px;">Technik-Details</div>
-    <div style="font-size: 16px;">${form.equipmentDetail || "-"}</div>
-  </div>
+Kaltfeuerwerk Dauer:
+${form.equipmentMulti.includes("Kaltfeuerwerk")
+            ? `
+Kaltfeuerwerk Dauer:
+${
+                form.coldFireDuration === "custom"
+                    ? `${form.coldFireCustom} Minuten`
+                    : `${form.coldFireDuration} Sekunden`
+            }
+`
+            : ""}
 
-  <div style="margin-bottom: 18px;">
-    <div style="font-size: 22px; font-weight: 800; margin-bottom: 4px;">Bereits vorhandene Technik</div>
-    <div style="font-size: 16px;">${form.existingTech || "-"}</div>
-  </div>
 
-  <div style="margin-bottom: 18px;">
-    <div style="font-size: 22px; font-weight: 800; margin-bottom: 4px;">Gästeanzahl</div>
-    <div style="font-size: 16px;">${form.guests || "-"}</div>
-  </div>
 
-  <div style="margin-bottom: 18px;">
-    <div style="font-size: 22px; font-weight: 800; margin-bottom: 4px;">Musikrichtungen</div>
-    <div style="font-size: 16px;">${form.music.length ? form.music.join(", ") : "-"}</div>
-  </div>
+Technik-Details:
+${form.equipmentDetail || "-"}
 
-  <div style="margin-bottom: 18px;">
-    <div style="font-size: 22px; font-weight: 800; margin-bottom: 4px;">Zeitraum</div>
-    <div style="font-size: 16px;">${form.timeFrom || "-"} bis ${form.timeTo || "-"}</div>
-  </div>
+Bereits vorhandene Technik:
+${form.existingTech || "-"}
 
-  <div style="margin-bottom: 18px;">
-    <div style="font-size: 22px; font-weight: 800; margin-bottom: 4px;">Lieferung gewünscht</div>
-    <div style="font-size: 16px;">${form.delivery === "yes" ? "Ja" : form.delivery === "no" ? "Nein" : "-"}</div>
-  </div>
 
-  <div style="margin-bottom: 18px;">
-    <div style="font-size: 22px; font-weight: 800; margin-bottom: 4px;">Nachricht</div>
-    <div style="font-size: 16px;">${form.message || "-"}</div>
-  </div>
+Gästeanzahl:
+${form.guests || "-"}
 
-</div>
+Musikrichtungen:
+${form.music.length ? form.music.join(", ") : "-"}
+
+Zeitraum:
+${form.timeFrom || "-"} bis ${form.timeTo || "-"}
+
+
+Lieferung gewünscht:
+${form.delivery === "yes" ? "Ja" : form.delivery === "no" ? "Nein" : "-"}
+
+
+${form.message || "-"}
 `;
 
 
