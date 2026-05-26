@@ -707,6 +707,7 @@ export default function BookingForm() {
 `;
 
 
+
             // 2) E-Mail senden
             await sendEmail({
                 firstName: form.firstName,
