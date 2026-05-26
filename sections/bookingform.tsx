@@ -654,48 +654,115 @@ export default function BookingForm() {
             }),
         });
 
-        const mailMessage = `
-<div style="font-family: Arial, sans-serif; line-height: 1.6;">
-  <div style="margin-bottom: 14px;">
-    <div style="font-size: 18px; font-weight: 700; margin-bottom: 2px;">Grund der Anfrage</div>
-    <div>${form.reason === "event" ? "Veranstaltung" : "Equipment-Verleih"}</div>
+const mailMessage = `
+<div style="font-family: Arial, sans-serif; line-height: 1.6; color: #111;">
+
+  <div style="margin-bottom: 18px;">
+    <div style="font-size: 22px; font-weight: 800; margin-bottom: 4px;">Grund der Anfrage</div>
+    <div style="font-size: 16px;">${form.reason === "event" ? "Veranstaltung" : "Equipment-Verleih"}</div>
   </div>
 
-  <div style="margin-bottom: 14px;">
-    <div style="font-size: 18px; font-weight: 700; margin-bottom: 2px;">Datum</div>
-    <div>${form.date || "-"}</div>
+  <div style="margin-bottom: 18px;">
+    <div style="font-size: 22px; font-weight: 800; margin-bottom: 4px;">Datum</div>
+    <div style="font-size: 16px;">${form.date || "-"}</div>
   </div>
 
-  <div style="margin-bottom: 14px;"><span style="font-size: 17px; font-weight: 700;">Event-Typ:</span><br/>${form.eventType || "-"}</div>
-  <div style="margin-bottom: 14px;"><span style="font-size: 17px; font-weight: 700;">Hochzeitsart:</span><br/>${form.weddingType || "-"}</div>
-  <div style="margin-bottom: 14px;"><span style="font-size: 17px; font-weight: 700;">Sonstige Angabe:</span><br/>${form.weddingOther || "-"}</div>
-  <div style="margin-bottom: 14px;"><span style="font-size: 17px; font-weight: 700;">Geburtstagsalter:</span><br/>${form.birthdayAge || "-"}</div>
-  <div style="margin-bottom: 14px;"><span style="font-size: 17px; font-weight: 700;">Bilder vorhanden:</span><br/>${form.hasLocationPhotos === "yes" ? "Ja" : form.hasLocationPhotos === "no" ? "Nein" : "-"}</div>
-  <div style="margin-bottom: 14px;"><span style="font-size: 17px; font-weight: 700;">Location-Name:</span><br/>${form.locationName || "-"}</div>
-  <div style="margin-bottom: 14px;"><span style="font-size: 17px; font-weight: 700;">Straße:</span><br/>${form.locationStreet || "-"}</div>
-  <div style="margin-bottom: 14px;"><span style="font-size: 17px; font-weight: 700;">PLZ / Ort:</span><br/>${form.locationZip || "-"} ${form.locationCity || "-"}</div>
+  <div style="margin-bottom: 18px;">
+    <div style="font-size: 22px; font-weight: 800; margin-bottom: 4px;">Event-Typ</div>
+    <div style="font-size: 16px;">${form.eventType || "-"}</div>
+  </div>
 
-  <div style="margin-bottom: 14px;"><span style="font-size: 17px; font-weight: 700;">Equipment benötigt:</span><br/>${form.equipmentNeeded === "yes" ? "Ja" : form.equipmentNeeded === "no" ? "Nein" : "-"}</div>
-  <div style="margin-bottom: 14px;"><span style="font-size: 17px; font-weight: 700;">Gewünschtes Equipment:</span><br/>${form.equipmentMulti.length ? form.equipmentMulti.join(", ") : "-"}</div>
+  <div style="margin-bottom: 18px;">
+    <div style="font-size: 22px; font-weight: 800; margin-bottom: 4px;">Hochzeitsart</div>
+    <div style="font-size: 16px;">${form.weddingType || "-"}</div>
+  </div>
+
+  <div style="margin-bottom: 18px;">
+    <div style="font-size: 22px; font-weight: 800; margin-bottom: 4px;">Sonstige Angabe</div>
+    <div style="font-size: 16px;">${form.weddingOther || "-"}</div>
+  </div>
+
+  <div style="margin-bottom: 18px;">
+    <div style="font-size: 22px; font-weight: 800; margin-bottom: 4px;">Geburtstagsalter</div>
+    <div style="font-size: 16px;">${form.birthdayAge || "-"}</div>
+  </div>
+
+  <div style="margin-bottom: 18px;">
+    <div style="font-size: 22px; font-weight: 800; margin-bottom: 4px;">Bilder vorhanden</div>
+    <div style="font-size: 16px;">${form.hasLocationPhotos === "yes" ? "Ja" : form.hasLocationPhotos === "no" ? "Nein" : "-"}</div>
+  </div>
+
+  <div style="margin-bottom: 18px;">
+    <div style="font-size: 22px; font-weight: 800; margin-bottom: 4px;">Location-Name</div>
+    <div style="font-size: 16px;">${form.locationName || "-"}</div>
+  </div>
+
+  <div style="margin-bottom: 18px;">
+    <div style="font-size: 22px; font-weight: 800; margin-bottom: 4px;">Straße</div>
+    <div style="font-size: 16px;">${form.locationStreet || "-"}</div>
+  </div>
+
+  <div style="margin-bottom: 18px;">
+    <div style="font-size: 22px; font-weight: 800; margin-bottom: 4px;">PLZ / Ort</div>
+    <div style="font-size: 16px;">${form.locationZip || "-"} ${form.locationCity || "-"}</div>
+  </div>
+
+  <div style="margin-bottom: 18px;">
+    <div style="font-size: 22px; font-weight: 800; margin-bottom: 4px;">Equipment benötigt</div>
+    <div style="font-size: 16px;">${form.equipmentNeeded === "yes" ? "Ja" : form.equipmentNeeded === "no" ? "Nein" : "-"}</div>
+  </div>
+
+  <div style="margin-bottom: 18px;">
+    <div style="font-size: 22px; font-weight: 800; margin-bottom: 4px;">Gewünschtes Equipment</div>
+    <div style="font-size: 16px;">${form.equipmentMulti.length ? form.equipmentMulti.join(", ") : "-"}</div>
+  </div>
 
   ${form.equipmentMulti.includes("Kaltfeuerwerk")
-            ? `<div style="margin-bottom: 14px;"><span style="font-size: 17px; font-weight: 700;">Kaltfeuerwerk Dauer:</span><br/>${
-                form.coldFireDuration === "custom"
-                    ? `${form.coldFireCustom} Minuten`
-                    : `${form.coldFireDuration} Sekunden`
-            }</div>`
-            : ""}
+    ? `<div style="margin-bottom: 18px;">
+         <div style="font-size: 22px; font-weight: 800; margin-bottom: 4px;">Kaltfeuerwerk Dauer</div>
+         <div style="font-size: 16px;">${
+           form.coldFireDuration === "custom"
+             ? `${form.coldFireCustom} Minuten`
+             : `${form.coldFireDuration} Sekunden`
+         }</div>
+       </div>`
+    : ""}
 
-  <div style="margin-bottom: 14px;"><span style="font-size: 17px; font-weight: 700;">Technik-Details:</span><br/>${form.equipmentDetail || "-"}</div>
-  <div style="margin-bottom: 14px;"><span style="font-size: 17px; font-weight: 700;">Bereits vorhandene Technik:</span><br/>${form.existingTech || "-"}</div>
+  <div style="margin-bottom: 18px;">
+    <div style="font-size: 22px; font-weight: 800; margin-bottom: 4px;">Technik-Details</div>
+    <div style="font-size: 16px;">${form.equipmentDetail || "-"}</div>
+  </div>
 
-  <div style="margin-bottom: 14px;"><span style="font-size: 17px; font-weight: 700;">Gästeanzahl:</span><br/>${form.guests || "-"}</div>
-  <div style="margin-bottom: 14px;"><span style="font-size: 17px; font-weight: 700;">Musikrichtungen:</span><br/>${form.music.length ? form.music.join(", ") : "-"}</div>
-  <div style="margin-bottom: 14px;"><span style="font-size: 17px; font-weight: 700;">Zeitraum:</span><br/>${form.timeFrom || "-"} bis ${form.timeTo || "-"}</div>
+  <div style="margin-bottom: 18px;">
+    <div style="font-size: 22px; font-weight: 800; margin-bottom: 4px;">Bereits vorhandene Technik</div>
+    <div style="font-size: 16px;">${form.existingTech || "-"}</div>
+  </div>
 
-  <div style="margin-bottom: 14px;"><span style="font-size: 17px; font-weight: 700;">Lieferung gewünscht:</span><br/>${form.delivery === "yes" ? "Ja" : form.delivery === "no" ? "Nein" : "-"}</div>
+  <div style="margin-bottom: 18px;">
+    <div style="font-size: 22px; font-weight: 800; margin-bottom: 4px;">Gästeanzahl</div>
+    <div style="font-size: 16px;">${form.guests || "-"}</div>
+  </div>
 
-  <div style="margin-bottom: 14px;"><span style="font-size: 17px; font-weight: 700;">Nachricht:</span><br/>${form.message || "-"}</div>
+  <div style="margin-bottom: 18px;">
+    <div style="font-size: 22px; font-weight: 800; margin-bottom: 4px;">Musikrichtungen</div>
+    <div style="font-size: 16px;">${form.music.length ? form.music.join(", ") : "-"}</div>
+  </div>
+
+  <div style="margin-bottom: 18px;">
+    <div style="font-size: 22px; font-weight: 800; margin-bottom: 4px;">Zeitraum</div>
+    <div style="font-size: 16px;">${form.timeFrom || "-"} bis ${form.timeTo || "-"}</div>
+  </div>
+
+  <div style="margin-bottom: 18px;">
+    <div style="font-size: 22px; font-weight: 800; margin-bottom: 4px;">Lieferung gewünscht</div>
+    <div style="font-size: 16px;">${form.delivery === "yes" ? "Ja" : form.delivery === "no" ? "Nein" : "-"}</div>
+  </div>
+
+  <div style="margin-bottom: 18px;">
+    <div style="font-size: 22px; font-weight: 800; margin-bottom: 4px;">Nachricht</div>
+    <div style="font-size: 16px;">${form.message || "-"}</div>
+  </div>
+
 </div>
 `;
 
