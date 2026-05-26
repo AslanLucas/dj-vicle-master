@@ -655,7 +655,7 @@ export default function BookingForm() {
         });
 
 const mailMessage = `
-<div style="font-family: Arial, sans-serif; line-height: 1.6; color: #111;">
+    <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #111;">
 
   <div style="margin-bottom: 18px;">
     <div style="font-size: 22px; font-weight: 800; margin-bottom: 4px;">Grund der Anfrage</div>
