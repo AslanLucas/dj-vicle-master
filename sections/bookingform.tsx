@@ -542,6 +542,7 @@ function StepTitle({ children }: { children: React.ReactNode }) {
 export default function BookingForm() {
     const [step, setStep] = useState<Step>("reason");
     const [showSuccess, setShowSuccess] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const [form, setForm] = useState<BookingFormState>(initialForm);
     const [errors, setErrors] = useState<FormErrors>({});
@@ -624,6 +625,8 @@ export default function BookingForm() {
         form.reason === "event" || (form.reason === "gallery" && form.delivery === "yes");
 
     const handleSubmit = async () => {
+        if (isSubmitting) return;
+
         const submitFields: FormField[] = [...contactFields];
 
         if (needsLocation) submitFields.push(...locationFields);
@@ -642,80 +645,119 @@ export default function BookingForm() {
 
 
     const submit = async () => {
-        // 1) Anfrage in Google Calendar eintragen
-        await fetch("/api/request-booking", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                name: `${form.firstName} ${form.lastName}`,
-                email: form.email,
-                message: form.message,
-                date: form.date
-            }),
-        });
+        if (isSubmitting) return;
+        setIsSubmitting(true);
+
+        try {
+            // 1) Anfrage in Google Calendar eintragen
+            await fetch("/api/request-booking", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    name: `${form.firstName} ${form.lastName}`,
+                    email: form.email,
+                    message: form.message,
+                    date: form.date
+                }),
+            });
 
         const mailMessage = `
-<div style="font-family: Arial, sans-serif; line-height: 1.6;">
-  <div style="margin-bottom: 14px;">
-    <div style="font-size: 18px; font-weight: 700; margin-bottom: 2px;">Grund der Anfrage</div>
-    <div>${form.reason === "event" ? "Veranstaltung" : "Equipment-Verleih"}</div>
-  </div>
+GRUND DER ANFRAGE
+${form.reason === "event" ? "Veranstaltung" : "Equipment-Verleih"}
 
-  <div style="margin-bottom: 14px;">
-    <div style="font-size: 18px; font-weight: 700; margin-bottom: 2px;">Datum</div>
-    <div>${form.date || "-"}</div>
-  </div>
+DATUM
+${form.date || "-"}
 
-  <div style="margin-bottom: 14px;"><span style="font-size: 17px; font-weight: 700;">Event-Typ:</span><br/>${form.eventType || "-"}</div>
-  <div style="margin-bottom: 14px;"><span style="font-size: 17px; font-weight: 700;">Hochzeitsart:</span><br/>${form.weddingType || "-"}</div>
-  <div style="margin-bottom: 14px;"><span style="font-size: 17px; font-weight: 700;">Sonstige Angabe:</span><br/>${form.weddingOther || "-"}</div>
-  <div style="margin-bottom: 14px;"><span style="font-size: 17px; font-weight: 700;">Geburtstagsalter:</span><br/>${form.birthdayAge || "-"}</div>
-  <div style="margin-bottom: 14px;"><span style="font-size: 17px; font-weight: 700;">Bilder vorhanden:</span><br/>${form.hasLocationPhotos === "yes" ? "Ja" : form.hasLocationPhotos === "no" ? "Nein" : "-"}</div>
-  <div style="margin-bottom: 14px;"><span style="font-size: 17px; font-weight: 700;">Location-Name:</span><br/>${form.locationName || "-"}</div>
-  <div style="margin-bottom: 14px;"><span style="font-size: 17px; font-weight: 700;">Straße:</span><br/>${form.locationStreet || "-"}</div>
-  <div style="margin-bottom: 14px;"><span style="font-size: 17px; font-weight: 700;">PLZ / Ort:</span><br/>${form.locationZip || "-"} ${form.locationCity || "-"}</div>
 
-  <div style="margin-bottom: 14px;"><span style="font-size: 17px; font-weight: 700;">Equipment benötigt:</span><br/>${form.equipmentNeeded === "yes" ? "Ja" : form.equipmentNeeded === "no" ? "Nein" : "-"}</div>
-  <div style="margin-bottom: 14px;"><span style="font-size: 17px; font-weight: 700;">Gewünschtes Equipment:</span><br/>${form.equipmentMulti.length ? form.equipmentMulti.join(", ") : "-"}</div>
+Event-Typ:
+${form.eventType || "-"}
 
-  ${form.equipmentMulti.includes("Kaltfeuerwerk")
-            ? `<div style="margin-bottom: 14px;"><span style="font-size: 17px; font-weight: 700;">Kaltfeuerwerk Dauer:</span><br/>${
+Hochzeitsart:
+${form.weddingType || "-"}
+
+Sonstige Angabe:
+${form.weddingOther || "-"}
+
+Geburtstagsalter:
+${form.birthdayAge || "-"}
+
+Bilder vorhanden:
+${form.hasLocationPhotos === "yes" ? "Ja" : form.hasLocationPhotos === "no" ? "Nein" : "-"}
+
+Location-Name:
+${form.locationName || "-"}
+
+Straße:
+${form.locationStreet || "-"}
+
+PLZ / Ort:
+${form.locationZip || "-"} ${form.locationCity || "-"}
+
+
+Equipment benötigt:
+${form.equipmentNeeded === "yes" ? "Ja" : form.equipmentNeeded === "no" ? "Nein" : "-"}
+
+Gewünschtes Equipment:
+${form.equipmentMulti.length ? form.equipmentMulti.join(", ") : "-"}
+
+Kaltfeuerwerk Dauer:
+${form.equipmentMulti.includes("Kaltfeuerwerk")
+            ? `
+Kaltfeuerwerk Dauer:
+${
                 form.coldFireDuration === "custom"
                     ? `${form.coldFireCustom} Minuten`
                     : `${form.coldFireDuration} Sekunden`
-            }</div>`
+            }
+`
             : ""}
 
-  <div style="margin-bottom: 14px;"><span style="font-size: 17px; font-weight: 700;">Technik-Details:</span><br/>${form.equipmentDetail || "-"}</div>
-  <div style="margin-bottom: 14px;"><span style="font-size: 17px; font-weight: 700;">Bereits vorhandene Technik:</span><br/>${form.existingTech || "-"}</div>
 
-  <div style="margin-bottom: 14px;"><span style="font-size: 17px; font-weight: 700;">Gästeanzahl:</span><br/>${form.guests || "-"}</div>
-  <div style="margin-bottom: 14px;"><span style="font-size: 17px; font-weight: 700;">Musikrichtungen:</span><br/>${form.music.length ? form.music.join(", ") : "-"}</div>
-  <div style="margin-bottom: 14px;"><span style="font-size: 17px; font-weight: 700;">Zeitraum:</span><br/>${form.timeFrom || "-"} bis ${form.timeTo || "-"}</div>
 
-  <div style="margin-bottom: 14px;"><span style="font-size: 17px; font-weight: 700;">Lieferung gewünscht:</span><br/>${form.delivery === "yes" ? "Ja" : form.delivery === "no" ? "Nein" : "-"}</div>
+Technik-Details:
+${form.equipmentDetail || "-"}
 
-  <div style="margin-bottom: 14px;"><span style="font-size: 17px; font-weight: 700;">Nachricht:</span><br/>${form.message || "-"}</div>
-</div>
+Bereits vorhandene Technik:
+${form.existingTech || "-"}
+
+
+Gästeanzahl:
+${form.guests || "-"}
+
+Musikrichtungen:
+${form.music.length ? form.music.join(", ") : "-"}
+
+Zeitraum:
+${form.timeFrom || "-"} bis ${form.timeTo || "-"}
+
+
+Lieferung gewünscht:
+${form.delivery === "yes" ? "Ja" : form.delivery === "no" ? "Nein" : "-"}
+
+
+${form.message || "-"}
 `;
 
 
-        // 2) E-Mail senden
-        await sendEmail({
-            firstName: form.firstName,
-            lastName: form.lastName,
-            email: form.email,
-            phoneNumber: form.phone,
-            company: form.company,
-            message: mailMessage,
-        });
+            // 2) E-Mail senden
+            await sendEmail({
+                firstName: form.firstName,
+                lastName: form.lastName,
+                email: form.email,
+                phoneNumber: form.phone,
+                company: form.company,
+                message: mailMessage,
+            });
 
-        // 3) Success UI
-        setShowSuccess(true);
+            // 3) Success UI
+            setShowSuccess(true);
 
-        setTimeout(() => {
-            window.location.href = "/";
-        }, 3000);
+            setTimeout(() => {
+                window.location.href = "/";
+            }, 3000);
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
 
@@ -1654,10 +1696,10 @@ export default function BookingForm() {
                                 </GhostButton>
 
                                 <PrimaryButton
-                                    disabled={!fieldsAreValid(contactFields)}
+                                    disabled={isSubmitting || !fieldsAreValid(contactFields)}
                                     onClick={handleSubmit}
                                 >
-                                    Anfrage senden
+                                    {isSubmitting ? "Wird gesendet..." : "Anfrage senden"}
                                 </PrimaryButton>
                             </div>
                         </motion.div>
