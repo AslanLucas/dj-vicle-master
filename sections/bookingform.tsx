@@ -662,71 +662,48 @@ export default function BookingForm() {
             });
 
         const mailMessage = `
-=== GRUND DER ANFRAGE ===
-${form.reason === "event" ? "Veranstaltung" : "Equipment-Verleih"}
+<div style="font-family: Arial, sans-serif; line-height: 1.6;">
+  <div style="margin-bottom: 14px;">
+    <div style="font-size: 18px; font-weight: 700; margin-bottom: 2px;">Grund der Anfrage</div>
+    <div>${form.reason === "event" ? "Veranstaltung" : "Equipment-Verleih"}</div>
+  </div>
 
-=== DATUM ===
-${form.date || "-"}
+  <div style="margin-bottom: 14px;">
+    <div style="font-size: 18px; font-weight: 700; margin-bottom: 2px;">Datum</div>
+    <div>${form.date || "-"}</div>
+  </div>
 
-EVENT-TYP:
-${form.eventType || "-"}
+  <div style="margin-bottom: 14px;"><span style="font-size: 17px; font-weight: 700;">Event-Typ:</span><br/>${form.eventType || "-"}</div>
+  <div style="margin-bottom: 14px;"><span style="font-size: 17px; font-weight: 700;">Hochzeitsart:</span><br/>${form.weddingType || "-"}</div>
+  <div style="margin-bottom: 14px;"><span style="font-size: 17px; font-weight: 700;">Sonstige Angabe:</span><br/>${form.weddingOther || "-"}</div>
+  <div style="margin-bottom: 14px;"><span style="font-size: 17px; font-weight: 700;">Geburtstagsalter:</span><br/>${form.birthdayAge || "-"}</div>
+  <div style="margin-bottom: 14px;"><span style="font-size: 17px; font-weight: 700;">Bilder vorhanden:</span><br/>${form.hasLocationPhotos === "yes" ? "Ja" : form.hasLocationPhotos === "no" ? "Nein" : "-"}</div>
+  <div style="margin-bottom: 14px;"><span style="font-size: 17px; font-weight: 700;">Location-Name:</span><br/>${form.locationName || "-"}</div>
+  <div style="margin-bottom: 14px;"><span style="font-size: 17px; font-weight: 700;">Straße:</span><br/>${form.locationStreet || "-"}</div>
+  <div style="margin-bottom: 14px;"><span style="font-size: 17px; font-weight: 700;">PLZ / Ort:</span><br/>${form.locationZip || "-"} ${form.locationCity || "-"}</div>
 
-HOCHZEITSART:
-${form.weddingType || "-"}
+  <div style="margin-bottom: 14px;"><span style="font-size: 17px; font-weight: 700;">Equipment benötigt:</span><br/>${form.equipmentNeeded === "yes" ? "Ja" : form.equipmentNeeded === "no" ? "Nein" : "-"}</div>
+  <div style="margin-bottom: 14px;"><span style="font-size: 17px; font-weight: 700;">Gewünschtes Equipment:</span><br/>${form.equipmentMulti.length ? form.equipmentMulti.join(", ") : "-"}</div>
 
-SONSTIGE ANGABE:
-${form.weddingOther || "-"}
-
-GEBURTSTAGSALTER:
-${form.birthdayAge || "-"}
-
-BILDER VORHANDEN:
-${form.hasLocationPhotos === "yes" ? "Ja" : form.hasLocationPhotos === "no" ? "Nein" : "-"}
-
-LOCATION-NAME:
-${form.locationName || "-"}
-
-STRASSE:
-${form.locationStreet || "-"}
-
-PLZ / ORT:
-${form.locationZip || "-"} ${form.locationCity || "-"}
-
-EQUIPMENT BENÖTIGT:
-${form.equipmentNeeded === "yes" ? "Ja" : form.equipmentNeeded === "no" ? "Nein" : "-"}
-
-GEWÜNSCHTES EQUIPMENT:
-${form.equipmentMulti.length ? form.equipmentMulti.join(", ") : "-"}
-
-${form.equipmentMulti.includes("Kaltfeuerwerk")
-            ? `KALTFEUERWERK DAUER:
-${
+  ${form.equipmentMulti.includes("Kaltfeuerwerk")
+            ? `<div style="margin-bottom: 14px;"><span style="font-size: 17px; font-weight: 700;">Kaltfeuerwerk Dauer:</span><br/>${
                 form.coldFireDuration === "custom"
                     ? `${form.coldFireCustom} Minuten`
                     : `${form.coldFireDuration} Sekunden`
-            }
+            }</div>`
+            : ""}
 
-`
-            : ""}TECHNIK-DETAILS:
-${form.equipmentDetail || "-"}
+  <div style="margin-bottom: 14px;"><span style="font-size: 17px; font-weight: 700;">Technik-Details:</span><br/>${form.equipmentDetail || "-"}</div>
+  <div style="margin-bottom: 14px;"><span style="font-size: 17px; font-weight: 700;">Bereits vorhandene Technik:</span><br/>${form.existingTech || "-"}</div>
 
-BEREITS VORHANDENE TECHNIK:
-${form.existingTech || "-"}
+  <div style="margin-bottom: 14px;"><span style="font-size: 17px; font-weight: 700;">Gästeanzahl:</span><br/>${form.guests || "-"}</div>
+  <div style="margin-bottom: 14px;"><span style="font-size: 17px; font-weight: 700;">Musikrichtungen:</span><br/>${form.music.length ? form.music.join(", ") : "-"}</div>
+  <div style="margin-bottom: 14px;"><span style="font-size: 17px; font-weight: 700;">Zeitraum:</span><br/>${form.timeFrom || "-"} bis ${form.timeTo || "-"}</div>
 
-GÄSTEANZAHL:
-${form.guests || "-"}
+  <div style="margin-bottom: 14px;"><span style="font-size: 17px; font-weight: 700;">Lieferung gewünscht:</span><br/>${form.delivery === "yes" ? "Ja" : form.delivery === "no" ? "Nein" : "-"}</div>
 
-MUSIKRICHTUNGEN:
-${form.music.length ? form.music.join(", ") : "-"}
-
-ZEITRAUM:
-${form.timeFrom || "-"} bis ${form.timeTo || "-"}
-
-LIEFERUNG GEWÜNSCHT:
-${form.delivery === "yes" ? "Ja" : form.delivery === "no" ? "Nein" : "-"}
-
-NACHRICHT:
-${form.message || "-"}
+  <div style="margin-bottom: 14px;"><span style="font-size: 17px; font-weight: 700;">Nachricht:</span><br/>${form.message || "-"}</div>
+</div>
 `;
 
 
