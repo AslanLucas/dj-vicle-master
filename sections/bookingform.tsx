@@ -662,81 +662,73 @@ export default function BookingForm() {
             });
 
         const mailMessage = `
-GRUND DER ANFRAGE
+=== GRUND DER ANFRAGE ===
 ${form.reason === "event" ? "Veranstaltung" : "Equipment-Verleih"}
 
-DATUM
+=== DATUM ===
 ${form.date || "-"}
 
-
-Event-Typ:
+EVENT-TYP:
 ${form.eventType || "-"}
 
-Hochzeitsart:
+HOCHZEITSART:
 ${form.weddingType || "-"}
 
-Sonstige Angabe:
+SONSTIGE ANGABE:
 ${form.weddingOther || "-"}
 
-Geburtstagsalter:
+GEBURTSTAGSALTER:
 ${form.birthdayAge || "-"}
 
-Bilder vorhanden:
+BILDER VORHANDEN:
 ${form.hasLocationPhotos === "yes" ? "Ja" : form.hasLocationPhotos === "no" ? "Nein" : "-"}
 
-Location-Name:
+LOCATION-NAME:
 ${form.locationName || "-"}
 
-Straße:
+STRASSE:
 ${form.locationStreet || "-"}
 
-PLZ / Ort:
+PLZ / ORT:
 ${form.locationZip || "-"} ${form.locationCity || "-"}
 
-
-Equipment benötigt:
+EQUIPMENT BENÖTIGT:
 ${form.equipmentNeeded === "yes" ? "Ja" : form.equipmentNeeded === "no" ? "Nein" : "-"}
 
-Gewünschtes Equipment:
+GEWÜNSCHTES EQUIPMENT:
 ${form.equipmentMulti.length ? form.equipmentMulti.join(", ") : "-"}
 
-Kaltfeuerwerk Dauer:
 ${form.equipmentMulti.includes("Kaltfeuerwerk")
-            ? `
-Kaltfeuerwerk Dauer:
+            ? `KALTFEUERWERK DAUER:
 ${
                 form.coldFireDuration === "custom"
                     ? `${form.coldFireCustom} Minuten`
                     : `${form.coldFireDuration} Sekunden`
             }
+
 `
-            : ""}
-
-
-
-Technik-Details:
+            : ""}TECHNIK-DETAILS:
 ${form.equipmentDetail || "-"}
 
-Bereits vorhandene Technik:
+BEREITS VORHANDENE TECHNIK:
 ${form.existingTech || "-"}
 
-
-Gästeanzahl:
+GÄSTEANZAHL:
 ${form.guests || "-"}
 
-Musikrichtungen:
+MUSIKRICHTUNGEN:
 ${form.music.length ? form.music.join(", ") : "-"}
 
-Zeitraum:
+ZEITRAUM:
 ${form.timeFrom || "-"} bis ${form.timeTo || "-"}
 
-
-Lieferung gewünscht:
+LIEFERUNG GEWÜNSCHT:
 ${form.delivery === "yes" ? "Ja" : form.delivery === "no" ? "Nein" : "-"}
 
-
+NACHRICHT:
 ${form.message || "-"}
 `;
+
 
 
             // 2) E-Mail senden
