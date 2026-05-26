@@ -542,6 +542,7 @@ function StepTitle({ children }: { children: React.ReactNode }) {
 export default function BookingForm() {
     const [step, setStep] = useState<Step>("reason");
     const [showSuccess, setShowSuccess] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const [form, setForm] = useState<BookingFormState>(initialForm);
     const [errors, setErrors] = useState<FormErrors>({});
@@ -624,6 +625,8 @@ export default function BookingForm() {
         form.reason === "event" || (form.reason === "gallery" && form.delivery === "yes");
 
     const handleSubmit = async () => {
+        if (isSubmitting) return;
+
         const submitFields: FormField[] = [...contactFields];
 
         if (needsLocation) submitFields.push(...locationFields);
@@ -642,8 +645,11 @@ export default function BookingForm() {
 
 
     const submit = async () => {
-        // 1) Anfrage in Google Calendar eintragen
-        await fetch("/api/request-booking", {
+        setIsSubmitting(true);
+
+        try {
+            // 1) Anfrage in Google Calendar eintragen
+            await fetch("/api/request-booking", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -778,12 +784,15 @@ const mailMessage = `
             message: mailMessage,
         });
 
-        // 3) Success UI
-        setShowSuccess(true);
+            // 3) Success UI
+            setShowSuccess(true);
 
-        setTimeout(() => {
-            window.location.href = "/";
-        }, 3000);
+            setTimeout(() => {
+                window.location.href = "/";
+            }, 3000);
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
 
@@ -1722,10 +1731,10 @@ const mailMessage = `
                                 </GhostButton>
 
                                 <PrimaryButton
-                                    disabled={!fieldsAreValid(contactFields)}
+                                    disabled={!fieldsAreValid(contactFields) || isSubmitting}
                                     onClick={handleSubmit}
                                 >
-                                    Anfrage senden
+                                    {isSubmitting ? "Wird gesendet..." : "Anfrage senden"}
                                 </PrimaryButton>
                             </div>
                         </motion.div>
