@@ -661,81 +661,77 @@ export default function BookingForm() {
                 }),
             });
 
+        const headingStyle = "font-size:18px;font-weight:700;margin:20px 0 6px;";
+        const labelStyle = "font-size:16px;font-weight:700;margin:16px 0 4px;";
+
+        const coldFireDuration = form.equipmentMulti.includes("Kaltfeuerwerk")
+            ? form.coldFireDuration === "custom"
+                ? `${form.coldFireCustom} Minuten`
+                : `${form.coldFireDuration} Sekunden`
+            : "-";
+
         const mailMessage = `
-GRUND DER ANFRAGE
-${form.reason === "event" ? "Veranstaltung" : "Equipment-Verleih"}
+<div style="font-family:Arial,sans-serif;font-size:14px;line-height:1.5;color:#222;">
+  <div style="${headingStyle}">GRUND DER ANFRAGE</div>
+  <div>${form.reason === "event" ? "Veranstaltung" : "Equipment-Verleih"}</div>
 
-DATUM
-${form.date || "-"}
+  <div style="${headingStyle}">DATUM</div>
+  <div>${form.date || "-"}</div>
 
+  <div style="${labelStyle}">Event-Typ:</div>
+  <div>${form.eventType || "-"}</div>
 
-Event-Typ:
-${form.eventType || "-"}
+  <div style="${labelStyle}">Hochzeitsart:</div>
+  <div>${form.weddingType || "-"}</div>
 
-Hochzeitsart:
-${form.weddingType || "-"}
+  <div style="${labelStyle}">Sonstige Angabe:</div>
+  <div>${form.weddingOther || "-"}</div>
 
-Sonstige Angabe:
-${form.weddingOther || "-"}
+  <div style="${labelStyle}">Geburtstagsalter:</div>
+  <div>${form.birthdayAge || "-"}</div>
 
-Geburtstagsalter:
-${form.birthdayAge || "-"}
+  <div style="${labelStyle}">Bilder vorhanden:</div>
+  <div>${form.hasLocationPhotos === "yes" ? "Ja" : form.hasLocationPhotos === "no" ? "Nein" : "-"}</div>
 
-Bilder vorhanden:
-${form.hasLocationPhotos === "yes" ? "Ja" : form.hasLocationPhotos === "no" ? "Nein" : "-"}
+  <div style="${labelStyle}">Location-Name:</div>
+  <div>${form.locationName || "-"}</div>
 
-Location-Name:
-${form.locationName || "-"}
+  <div style="${labelStyle}">Straße:</div>
+  <div>${form.locationStreet || "-"}</div>
 
-Straße:
-${form.locationStreet || "-"}
+  <div style="${labelStyle}">PLZ / Ort:</div>
+  <div>${form.locationZip || "-"} ${form.locationCity || "-"}</div>
 
-PLZ / Ort:
-${form.locationZip || "-"} ${form.locationCity || "-"}
+  <div style="${labelStyle}">Equipment benötigt:</div>
+  <div>${form.equipmentNeeded === "yes" ? "Ja" : form.equipmentNeeded === "no" ? "Nein" : "-"}</div>
 
+  <div style="${labelStyle}">Gewünschtes Equipment:</div>
+  <div>${form.equipmentMulti.length ? form.equipmentMulti.join(", ") : "-"}</div>
 
-Equipment benötigt:
-${form.equipmentNeeded === "yes" ? "Ja" : form.equipmentNeeded === "no" ? "Nein" : "-"}
+  <div style="${labelStyle}">Kaltfeuerwerk Dauer:</div>
+  <div>${coldFireDuration}</div>
 
-Gewünschtes Equipment:
-${form.equipmentMulti.length ? form.equipmentMulti.join(", ") : "-"}
+  <div style="${labelStyle}">Technik-Details:</div>
+  <div>${form.equipmentDetail || "-"}</div>
 
-Kaltfeuerwerk Dauer:
-${form.equipmentMulti.includes("Kaltfeuerwerk")
-            ? `
-Kaltfeuerwerk Dauer:
-${
-                form.coldFireDuration === "custom"
-                    ? `${form.coldFireCustom} Minuten`
-                    : `${form.coldFireDuration} Sekunden`
-            }
-`
-            : ""}
+  <div style="${labelStyle}">Bereits vorhandene Technik:</div>
+  <div>${form.existingTech || "-"}</div>
 
+  <div style="${labelStyle}">Gästeanzahl:</div>
+  <div>${form.guests || "-"}</div>
 
+  <div style="${labelStyle}">Musikrichtungen:</div>
+  <div>${form.music.length ? form.music.join(", ") : "-"}</div>
 
-Technik-Details:
-${form.equipmentDetail || "-"}
+  <div style="${labelStyle}">Zeitraum:</div>
+  <div>${form.timeFrom || "-"} bis ${form.timeTo || "-"}</div>
 
-Bereits vorhandene Technik:
-${form.existingTech || "-"}
+  <div style="${labelStyle}">Lieferung gewünscht:</div>
+  <div>${form.delivery === "yes" ? "Ja" : form.delivery === "no" ? "Nein" : "-"}</div>
 
-
-Gästeanzahl:
-${form.guests || "-"}
-
-Musikrichtungen:
-${form.music.length ? form.music.join(", ") : "-"}
-
-Zeitraum:
-${form.timeFrom || "-"} bis ${form.timeTo || "-"}
-
-
-Lieferung gewünscht:
-${form.delivery === "yes" ? "Ja" : form.delivery === "no" ? "Nein" : "-"}
-
-
-${form.message || "-"}
+  <div style="${labelStyle}">Nachricht:</div>
+  <div>${form.message || "-"}</div>
+</div>
 `;
 
 
