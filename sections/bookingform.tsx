@@ -55,6 +55,9 @@ type BookingFormState = {
     firstName: string;
     phone: string;
     email: string;
+    contactStreet: string;
+    contactZip: string;
+    contactCity: string;
     message: string;
 };
 
@@ -90,6 +93,9 @@ const initialForm: BookingFormState = {
     firstName: "",
     phone: "",
     email: "",
+    contactStreet: "",
+    contactZip: "",
+    contactCity: "",
     message: "",
 };
 
@@ -155,6 +161,12 @@ const normalizeFieldValue = (
             return onlyLocationNameChars(stringValue, 120) as BookingFormState[FormField];
         case "locationStreet":
             return onlyStreetChars(stringValue, 120) as BookingFormState[FormField];
+        case "contactStreet":
+            return onlyStreetChars(stringValue, 120) as BookingFormState[FormField];
+        case "contactZip":
+            return onlyDigits(stringValue, 5) as BookingFormState[FormField];
+        case "contactCity":
+            return onlyCityChars(stringValue, 80) as BookingFormState[FormField];
         case "company":
             return onlyCompanyChars(stringValue, 100) as BookingFormState[FormField];
         case "weddingOther":
@@ -318,6 +330,20 @@ const validateFieldValue = (
             return /^\d{5}$/.test(textValue) ? "" : "Bitte gib eine gültige 5-stellige PLZ ein.";
 
         case "locationCity":
+            if (!textValue) return "Bitte gib den Ort ein.";
+            return CITY_REGEX.test(textValue) ? "" : "Bitte gib einen gültigen Ort ein.";
+
+        case "contactStreet":
+            if (!textValue) return "Bitte gib Straße und Hausnummer ein.";
+            if (!STREET_REGEX.test(textValue)) return "Bitte gib eine gültige Straße ein.";
+            if (!/\d/.test(textValue)) return "Bitte gib auch die Hausnummer an.";
+            return "";
+
+        case "contactZip":
+            if (!textValue) return "Bitte gib die PLZ ein.";
+            return /^\d{5}$/.test(textValue) ? "" : "Bitte gib eine gültige 5-stellige PLZ ein.";
+
+        case "contactCity":
             if (!textValue) return "Bitte gib den Ort ein.";
             return CITY_REGEX.test(textValue) ? "" : "Bitte gib einen gültigen Ort ein.";
 
@@ -613,7 +639,7 @@ export default function BookingForm() {
         });
     };
 
-    const contactFields: FormField[] = ["firstName", "lastName", "phone", "email"];
+    const contactFields: FormField[] = ["firstName", "lastName", "phone", "email","contactStreet", "contactZip","contactCity",];
     const locationFields: FormField[] = [
         "locationName",
         "locationStreet",
@@ -763,6 +789,11 @@ const mailMessage = `
   <div style="margin-bottom: 18px;">
     <div style="font-size: 22px; font-weight: 800; margin-bottom: 4px;">Lieferung gewünscht</div>
     <div style="font-size: 16px;">${form.delivery === "yes" ? "Ja" : form.delivery === "no" ? "Nein" : "-"}</div>
+  </div>
+
+  <div style="margin-bottom: 18px;">
+    <div style="font-size: 22px; font-weight: 800; margin-bottom: 4px;">Adresse</div>
+    <div style="font-size: 16px;">${form.contactStreet || "-"}, ${form.contactZip || "-"} ${form.contactCity || "-"}</div>
   </div>
 
   <div style="margin-bottom: 18px;">
@@ -1702,6 +1733,41 @@ const mailMessage = `
                                     inputMode="email"
                                     autoComplete="email"
                                     maxLength={120}
+                                />
+
+                                <InputField
+                                    label="Straße & Hausnummer"
+                                    required
+                                    value={form.contactStreet}
+                                    onChange={(v) => update("contactStreet", v)}
+                                    onBlur={() => setFieldError("contactStreet", form.contactStreet)}
+                                    error={errors.contactStreet}
+                                    placeholder="Musterstraße 10"
+                                    autoComplete="street-address"
+                                    maxLength={120}
+                                />
+                                <InputField
+                                    label="PLZ"
+                                    required
+                                    value={form.contactZip}
+                                    onChange={(v) => update("contactZip", v)}
+                                    onBlur={() => setFieldError("contactZip", form.contactZip)}
+                                    error={errors.contactZip}
+                                    placeholder="49808"
+                                    inputMode="numeric"
+                                    autoComplete="postal-code"
+                                    maxLength={5}
+                                />
+                                <InputField
+                                    label="Ort"
+                                    required
+                                    value={form.contactCity}
+                                    onChange={(v) => update("contactCity", v)}
+                                    onBlur={() => setFieldError("contactCity", form.contactCity)}
+                                    error={errors.contactCity}
+                                    placeholder="Lingen"
+                                    autoComplete="address-level2"
+                                    maxLength={80}
                                 />
 
                                 <div className="sm:col-span-2">
