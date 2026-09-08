@@ -7,8 +7,9 @@ export const sendEmail = async (data: {
     phoneNumber: string;
     message: string;
     company?: string;
+    address?: string;
 }) => {
-    try {
+    try {   
         const response = await fetch('/api/email', {
             method: 'POST',
             headers: {

@@ -4,7 +4,7 @@ import emailjs from '@emailjs/nodejs';
 export async function POST(request: Request) {
     try {
         const body = await request.json();
-        const { firstName, lastName, email, phoneNumber, message, company } = body;
+        const { firstName, lastName, email, phoneNumber, message, company, address } = body;
 
         const currentDate = new Date().toLocaleDateString('de-DE', {
             weekday: 'long',
@@ -20,6 +20,7 @@ export async function POST(request: Request) {
             phone_number: phoneNumber,
             message,
             company,
+            address,
             date: currentDate
         };
 
