@@ -11,7 +11,7 @@ export default function Sectionlegalnotice() {
                     <h2 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-2">Angaben gemäß § 5 TMG</h2>
                     <p className="text-gray-700 text-sm sm:text-base">Name: Vadim Samoljak</p>
                     <p className="text-gray-700 text-sm sm:text-base">Gewerbename: DJ Vicle</p>
-                    <p className="text-gray-700 text-sm sm:text-base">Hafenstraße 3, 48529 Nordhorn</p>
+                    <p className="text-gray-700 text-sm sm:text-base">Eichenstraße 20, 48531 Nordhorn</p>
                 </div>
 
                 <div className="mb-6">

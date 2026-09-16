@@ -10,7 +10,7 @@ export default function Sectionprivacypolicy() {
                     <h2 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-2">1. Verantwortlicher für die
                         Datenverarbeitung</h2>
                     <p className="text-gray-700">Name: Vadim Samoljak DJ Vicle</p>
-                    <p className="text-gray-700">Hafenstraße 3, 48529 Nordhorn</p>
+                    <p className="text-gray-700">Eichenstraße 20, 48531 Nordhorn</p>
                     <p className="text-gray-700">E-Mail: info@djvicle.de</p>
                 </div>
                 <div className="mb-6">
