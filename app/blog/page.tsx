@@ -75,7 +75,7 @@ export default function BlogPage() {
 
       <section className="mx-auto max-w-6xl px-6 pb-16 pt-36">
         <p className="text-sm uppercase tracking-wide text-[#2A2A2A]/70">Ratgeber & Insights</p>
-        <h1 className="mt-3 text-4xl font-extrabold uppercase tracking-wide sm:text-5xl">Blog</h1>
+        <h1 className="mt-3 text-4xl font-extrabold uppercase tracking-wide text-black sm:text-5xl">Blog</h1>
         <p className="mt-6 max-w-3xl text-lg leading-relaxed text-[#2A2A2A]/90">
           Hier findest du praxisnahe Beiträge zu Hochzeit, Eventplanung, Musikdramaturgie und Buchung.
           Alle Inhalte sind auf deutsch-russische Events, Firmenfeiern und private Feiern ausgerichtet.
@@ -91,7 +91,7 @@ export default function BlogPage() {
               <p className="text-xs font-bold uppercase tracking-wide text-[#2A2A2A]/60">
                 {post.strategicGoal} · {post.mainKeyword}
               </p>
-              <h2 className="mt-3 text-xl font-bold uppercase leading-snug">{post.title}</h2>
+              <h2 className="mt-3 text-xl font-bold uppercase leading-snug text-black">{post.title}</h2>
               <p className="mt-4 text-sm leading-relaxed text-[#2A2A2A]/85">{post.excerpt}</p>
               <p className="mt-6 text-xs font-semibold uppercase tracking-wide text-[#2A2A2A]/70 transition group-hover:text-[#2A2A2A]">
                 Zum Beitrag
