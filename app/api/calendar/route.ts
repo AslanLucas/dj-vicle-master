@@ -2,8 +2,6 @@ import { google } from "googleapis";
 
 const BOOKED_COLOR_ID = "11"; // 🔴 Rot = gebucht
 
-export async function GET() {
-    try {
 function getGoogleCredentials() {
     const base64Key = process.env.GOOGLE_SERVICE_ACCOUNT_KEY_BASE64;
     const rawKey = process.env.GOOGLE_SERVICE_ACCOUNT_KEY;
@@ -20,6 +18,9 @@ function getGoogleCredentials() {
         "Missing GOOGLE_SERVICE_ACCOUNT_KEY_BASE64 or GOOGLE_SERVICE_ACCOUNT_KEY"
     );
 }
+
+export async function GET() {
+    try {
         const credentials = getGoogleCredentials();
 
         const auth = new google.auth.GoogleAuth({
@@ -58,7 +59,11 @@ function getGoogleCredentials() {
 
         return Response.json({ events: bookedEvents });
     } catch (error) {
-        console.error("Calendar API Error:", error);
-        return new Response("Error loading calendar events", { status: 500 });
+        const message = error instanceof Error ? error.message : String(error);
+        console.error("Calendar API Error:", message, error);
+        return Response.json(
+            { events: [], error: "Error loading calendar events", detail: message },
+            { status: 500 }
+        );
     }
 }

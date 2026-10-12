@@ -266,6 +266,10 @@ function NextAppointments() {
                 const res = await fetch("/api/calendar");
                 const data = await res.json();
 
+                if (!res.ok) {
+                    console.error("Calendar API failed:", res.status, data);
+                }
+
                 const raw = (data.events || []) as any[];
 
                 const normalized = raw
@@ -282,7 +286,8 @@ function NextAppointments() {
                     .sort((a: any, b: any) => a._start.getTime() - b._start.getTime());
 
                 if (!cancelled) setEvents(normalized as any[]);
-            } catch {
+            } catch (error) {
+                console.error("Failed to load calendar events:", error);
                 if (!cancelled) setEvents([]);
             } finally {
                 if (!cancelled) setLoading(false);
