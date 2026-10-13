@@ -812,6 +812,7 @@ const mailMessage = `
             email: form.email,
             phoneNumber: form.phone,
             company: form.company,
+            address: `${form.contactStreet || "-"}, ${form.contactZip || "-"} ${form.contactCity || "-"}`,
             message: mailMessage,
         });
 
