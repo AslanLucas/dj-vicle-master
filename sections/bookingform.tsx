@@ -792,11 +792,6 @@ const mailMessage = `
   </div>
 
   <div style="margin-bottom: 18px;">
-    <div style="font-size: 22px; font-weight: 800; margin-bottom: 4px;">Adresse</div>
-    <div style="font-size: 16px;">${form.contactStreet || "-"}, ${form.contactZip || "-"} ${form.contactCity || "-"}</div>
-  </div>
-
-  <div style="margin-bottom: 18px;">
     <div style="font-size: 22px; font-weight: 800; margin-bottom: 4px;">Nachricht</div>
     <div style="font-size: 16px;">${form.message || "-"}</div>
   </div>
